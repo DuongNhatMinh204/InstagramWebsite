@@ -1,4 +1,4 @@
-package com.nminh.websiteinstagram.service;
+package com.nminh.websiteinstagram.service.impl;
 
 import com.nminh.websiteinstagram.entity.User;
 import com.nminh.websiteinstagram.enums.ErrorCode;
@@ -7,6 +7,7 @@ import com.nminh.websiteinstagram.mapper.UserMapper;
 import com.nminh.websiteinstagram.model.request.UserLoginDTO;
 import com.nminh.websiteinstagram.model.request.UserRegisterDTO;
 import com.nminh.websiteinstagram.repository.UserRepository;
+import com.nminh.websiteinstagram.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
