@@ -9,7 +9,11 @@ import org.springframework.http.HttpStatusCode;
 
 @Getter
 public enum ErrorCode {
-    USER_EXISTS(1001,"user existed" , HttpStatus.BAD_REQUEST) ;
+    USER_EXISTS(1001,"user existed" , HttpStatus.BAD_REQUEST) ,
+    EMAIL_NOT_VALID(1002,"email not valid" , HttpStatus.BAD_REQUEST) ,
+    ARGURMENT_NOT_VALID(1003,"argument must be filled" , HttpStatus.BAD_REQUEST) ,
+    PASSSWORD_MISMATCH(1004,"password not match" , HttpStatus.BAD_REQUEST) ,
+    USER_NOT_EXISTS(1005,"user not existed" , HttpStatus.BAD_REQUEST) ;
     private int code ;
     private String message ;
     private HttpStatusCode httpStatusCode ;

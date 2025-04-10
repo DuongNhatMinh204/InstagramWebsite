@@ -1,12 +1,15 @@
 package com.nminh.websiteinstagram.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,8 +38,13 @@ public class User {
     @Column(name = "full_name" , nullable = false)
     private String fullName ;
 
-    @Column(name = "date" , nullable = false)
-    private Date birthday ;
+    @Column(name = "nick_name" , nullable = false)
+    private String nickName ;
+
+    @Column(name = "date", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate birthday;
 
     @Column(name = "gender")
     private String gender ;
