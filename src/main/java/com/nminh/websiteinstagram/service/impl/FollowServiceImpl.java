@@ -56,8 +56,24 @@ public class FollowServiceImpl implements FollowService {
         userRepository.save(userCurrent);
         userRepository.save(userFollowed);
 
-
         return "Follow Successfully";
+    }
+    @Override
+    public String unfollow(Long userId, Long toUnfollowingUserId) {
+        User userCurrent = userRepository.findById(userId).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
+        User userFollowed = userRepository.findById(toUnfollowingUserId).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
+
+        Follow isFollow = followRepository.findByFollowerAndFollowing(userCurrent, userFollowed);
+        if(isFollow != null){
+            followRepository.delete(isFollow);
+            userCurrent.getFollowing().remove(isFollow);
+            userFollowed.getFollowers().remove(isFollow);
+            userRepository.save(userCurrent);
+            userRepository.save(userFollowed);
+        }else {
+            throw new AppException(ErrorCode.CANNOT_UNFOLLOW);
+        }
+        return "Unfollow Successfully";
     }
 
     @Override

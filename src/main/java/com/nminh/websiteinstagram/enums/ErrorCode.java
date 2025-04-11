@@ -15,7 +15,13 @@ public enum ErrorCode {
     PASSSWORD_MISMATCH(1004,"password not match" , HttpStatus.BAD_REQUEST) ,
     USER_NOT_EXISTS(1005,"user not existed" , HttpStatus.BAD_REQUEST) ,
     CANNOT_FOLLOW_YOURSELF(1006,"you can not follow yourself" , HttpStatus.BAD_REQUEST) ,
-    CANNOT_REFOLLOW(1007,"you can not follow this person times" , HttpStatus.BAD_REQUEST) ;
+    CANNOT_REFOLLOW(1007,"you can not follow this person times" , HttpStatus.BAD_REQUEST) ,
+    CANNOT_UNFOLLOW(1008,"you can not unfollow this person because you have not been following before" , HttpStatus.BAD_REQUEST) ,
+    CANNOT_LIKE_TWO_TIMES(1009,"you can not like two times" , HttpStatus.BAD_REQUEST) ,
+    POST_NOT_FOUND(1010,"post not found" , HttpStatus.NOT_FOUND) ,
+    CANNOT_UNLIKE(1011,"you can not unlike this post" , HttpStatus.BAD_REQUEST) ,
+    CANNOT_FOUND_LIKE(1012,"you can not found like this post" , HttpStatus.BAD_REQUEST) ;
+
     private int code ;
     private String message ;
     private HttpStatusCode httpStatusCode ;

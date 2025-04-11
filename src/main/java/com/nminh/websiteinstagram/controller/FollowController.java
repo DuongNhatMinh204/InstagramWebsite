@@ -23,6 +23,14 @@ public class FollowController {
         return apiResponse;
     }
 
+    @DeleteMapping("/unfollowing")
+    public ApiResponse unfollowFrom(@RequestParam Long userId, @RequestParam Long unfollowingUserId) {
+        log.info("Unfollowing user {} following {}", userId, unfollowingUserId);
+        ApiResponse apiResponse = new ApiResponse(followService.unfollow(userId, unfollowingUserId));
+        log.info("Unfollowing user {} successfully unfollowed {}", userId, unfollowingUserId);
+        return apiResponse;
+    }
+
     // xem danh sách người theo dõi mình
     @GetMapping("/listfollower")
     public ApiResponse listFollower(@RequestParam Long userId) {
