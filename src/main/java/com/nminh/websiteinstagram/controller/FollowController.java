@@ -24,11 +24,20 @@ public class FollowController {
     }
 
     // xem danh sách người theo dõi mình
-    @GetMapping("/listFollower")
+    @GetMapping("/listfollower")
     public ApiResponse listFollower(@RequestParam Long userId) {
         log.info("Following user {} listFollower", userId);
         ApiResponse apiResponse = new ApiResponse(followService.getFollowers(userId));
         log.info("Following user {} successfully listFollower", userId);
+        return apiResponse;
+    }
+
+    //xem danh sách người mình theo dõi
+    @GetMapping("/listfollowing")
+    public ApiResponse listFollowing(@RequestParam Long userId) {
+        log.info("Following user {} listFollowing", userId);
+        ApiResponse apiResponse = new ApiResponse(followService.getFollowing(userId));
+        log.info("Following user {} successfully listFollowing", userId);
         return apiResponse;
     }
 }

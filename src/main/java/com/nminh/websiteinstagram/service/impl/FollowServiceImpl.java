@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class FollowServiceImpl implements FollowService {
@@ -30,9 +31,18 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public String follow(Long userId, Long toFollowingUserId) {
+        if(Objects.equals(userId, toFollowingUserId)){
+            throw new AppException(ErrorCode.CANNOT_FOLLOW_YOURSELF) ;
+        }
 
         User userCurrent = userRepository.findById(userId).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
         User userFollowed = userRepository.findById(toFollowingUserId).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
+
+        // kiểm tra xem đã follow hay chưa -- nếu rồi không cho follow tiếp
+        Follow isFollow = followRepository.findByFollowerAndFollowing(userCurrent, userFollowed);
+        if(isFollow != null){
+            throw new AppException(ErrorCode.CANNOT_REFOLLOW) ;
+        }
 
         Follow follow = new Follow();
         follow.setFollower(userCurrent);
@@ -56,13 +66,29 @@ public class FollowServiceImpl implements FollowService {
         User user = userRepository.findById(userId).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
 
         List<UserReponseDTO> userReponseDTOS = new ArrayList<>();
-        List<Follow> userFollowers = user.getFollowers();
+        List<Follow> userFollowers = user.getFollowers(); // lấy ra danh sách những người follow mình
         for (Follow follow : userFollowers) {
             User userFollower = follow.getFollower();
             UserReponseDTO userReponseDTO = userMapper.toUserReponseDTO(userFollower);
             userReponseDTOS.add(userReponseDTO);
         }
         followerResponseDTO.setTotal_followers(user.getFollowers().size());
+        followerResponseDTO.setFollowers(userReponseDTOS);
+        return followerResponseDTO;
+    }
+
+    @Override
+    public FollowerResponseDTO getFollowing(Long userId) {
+        FollowerResponseDTO followerResponseDTO = new FollowerResponseDTO();
+        User user = userRepository.findById(userId).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
+        List<UserReponseDTO> userReponseDTOS = new ArrayList<>();
+        List<Follow> userFollowings = user.getFollowing();
+        for (Follow follow : userFollowings) {
+            User userFollowing = follow.getFollowing();
+            UserReponseDTO userReponseDTO = userMapper.toUserReponseDTO(userFollowing);
+            userReponseDTOS.add(userReponseDTO);
+        }
+        followerResponseDTO.setTotal_followers(user.getFollowing().size());
         followerResponseDTO.setFollowers(userReponseDTOS);
         return followerResponseDTO;
     }

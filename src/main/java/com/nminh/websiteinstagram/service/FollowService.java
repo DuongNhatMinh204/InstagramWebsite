@@ -5,4 +5,5 @@ import com.nminh.websiteinstagram.model.response.FollowerResponseDTO;
 public interface FollowService {
     String follow(Long userId, Long toFollowingUserId);
     FollowerResponseDTO getFollowers(Long userId);
+    FollowerResponseDTO getFollowing(Long userId);
 }

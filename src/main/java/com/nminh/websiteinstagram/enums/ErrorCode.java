@@ -13,7 +13,9 @@ public enum ErrorCode {
     EMAIL_NOT_VALID(1002,"email not valid" , HttpStatus.BAD_REQUEST) ,
     ARGURMENT_NOT_VALID(1003,"argument must be filled" , HttpStatus.BAD_REQUEST) ,
     PASSSWORD_MISMATCH(1004,"password not match" , HttpStatus.BAD_REQUEST) ,
-    USER_NOT_EXISTS(1005,"user not existed" , HttpStatus.BAD_REQUEST) ;
+    USER_NOT_EXISTS(1005,"user not existed" , HttpStatus.BAD_REQUEST) ,
+    CANNOT_FOLLOW_YOURSELF(1006,"you can not follow yourself" , HttpStatus.BAD_REQUEST) ,
+    CANNOT_REFOLLOW(1007,"you can not follow this person times" , HttpStatus.BAD_REQUEST) ;
     private int code ;
     private String message ;
     private HttpStatusCode httpStatusCode ;

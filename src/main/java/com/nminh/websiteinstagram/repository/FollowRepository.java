@@ -1,6 +1,7 @@
 package com.nminh.websiteinstagram.repository;
 
 import com.nminh.websiteinstagram.entity.Follow;
+import com.nminh.websiteinstagram.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -11,4 +12,5 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     int  getTotalFollowers(Long userId) ;
 
 
+    Follow findByFollowerAndFollowing(User follower, User following);
 }
