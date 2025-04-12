@@ -6,7 +6,7 @@ import com.nminh.websiteinstagram.enums.ErrorCode;
 import com.nminh.websiteinstagram.exception.AppException;
 import com.nminh.websiteinstagram.mapper.UserMapper;
 import com.nminh.websiteinstagram.model.response.FollowerResponseDTO;
-import com.nminh.websiteinstagram.model.response.UserReponseDTO;
+import com.nminh.websiteinstagram.model.response.UserResponseDTO;
 import com.nminh.websiteinstagram.repository.FollowRepository;
 import com.nminh.websiteinstagram.repository.UserRepository;
 import com.nminh.websiteinstagram.service.FollowService;
@@ -81,15 +81,15 @@ public class FollowServiceImpl implements FollowService {
         FollowerResponseDTO followerResponseDTO = new FollowerResponseDTO();
         User user = userRepository.findById(userId).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
 
-        List<UserReponseDTO> userReponseDTOS = new ArrayList<>();
+        List<UserResponseDTO> userResponseDTOS = new ArrayList<>();
         List<Follow> userFollowers = user.getFollowers(); // lấy ra danh sách những người follow mình
         for (Follow follow : userFollowers) {
             User userFollower = follow.getFollower();
-            UserReponseDTO userReponseDTO = userMapper.toUserReponseDTO(userFollower);
-            userReponseDTOS.add(userReponseDTO);
+            UserResponseDTO userResponseDTO = userMapper.toUserReponseDTO(userFollower);
+            userResponseDTOS.add(userResponseDTO);
         }
         followerResponseDTO.setTotal_followers(user.getFollowers().size());
-        followerResponseDTO.setFollowers(userReponseDTOS);
+        followerResponseDTO.setFollowers(userResponseDTOS);
         return followerResponseDTO;
     }
 
@@ -97,15 +97,15 @@ public class FollowServiceImpl implements FollowService {
     public FollowerResponseDTO getFollowing(Long userId) {
         FollowerResponseDTO followerResponseDTO = new FollowerResponseDTO();
         User user = userRepository.findById(userId).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
-        List<UserReponseDTO> userReponseDTOS = new ArrayList<>();
+        List<UserResponseDTO> userResponseDTOS = new ArrayList<>();
         List<Follow> userFollowings = user.getFollowing();
         for (Follow follow : userFollowings) {
             User userFollowing = follow.getFollowing();
-            UserReponseDTO userReponseDTO = userMapper.toUserReponseDTO(userFollowing);
-            userReponseDTOS.add(userReponseDTO);
+            UserResponseDTO userResponseDTO = userMapper.toUserReponseDTO(userFollowing);
+            userResponseDTOS.add(userResponseDTO);
         }
         followerResponseDTO.setTotal_followers(user.getFollowing().size());
-        followerResponseDTO.setFollowers(userReponseDTOS);
+        followerResponseDTO.setFollowers(userResponseDTOS);
         return followerResponseDTO;
     }
 }

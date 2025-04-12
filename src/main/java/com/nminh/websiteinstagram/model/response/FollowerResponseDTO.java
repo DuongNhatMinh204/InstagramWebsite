@@ -11,5 +11,5 @@ import java.util.List;
 @NoArgsConstructor
 public class FollowerResponseDTO {
     private int total_followers ;
-    private List<UserReponseDTO> followers ;
+    private List<UserResponseDTO> followers ;
 }

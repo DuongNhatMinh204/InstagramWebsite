@@ -16,6 +16,7 @@ public class PostResponseDTO {
     private Long id ;
     private String content ;
     private String imageUrl ;
-    private List<Like> likes ;
+    private Integer totalLikes = 0 ;
+    private List<LikeResponseDTO> likes ;
     private List<Comment> comments ;
 }

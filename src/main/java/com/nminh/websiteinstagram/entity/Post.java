@@ -36,6 +36,8 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user ;
 
+    @Column(name = "total_like")
+    private Integer totalLikes = 0 ;
     @OneToMany(mappedBy = "post")
     private List<Like> likes ;
 

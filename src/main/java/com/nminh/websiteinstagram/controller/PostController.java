@@ -16,6 +16,7 @@ public class PostController {
     @Autowired
     private PostService postService;
 
+    // tạo bài đăng
     @PostMapping("/create/{id}")
     public ApiResponse createPost(@PathVariable Long id,@RequestBody PostCreateDTO postCreateDTO) {
         log.info("Post of  user id is {}", id);
@@ -23,6 +24,15 @@ public class PostController {
         apiResponse.setData(postService.createPost(id, postCreateDTO));
         apiResponse.setMessage("Success");
         return apiResponse;
-
     }
+    // lấy danh sách từ danh sách người mình follow
+    @GetMapping("/getpost")
+   public ApiResponse getPost(@RequestParam Long userId){
+        log.info("Get post from people you follow {}", userId);
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setData(postService.getAllPostsFromFollower(userId));
+        apiResponse.setMessage("Success");
+        return apiResponse;
+    }
+
 }
