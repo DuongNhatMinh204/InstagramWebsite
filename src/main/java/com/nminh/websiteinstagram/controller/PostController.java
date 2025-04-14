@@ -1,5 +1,6 @@
 package com.nminh.websiteinstagram.controller;
 
+import com.nminh.websiteinstagram.constant.Constants;
 import com.nminh.websiteinstagram.entity.Post;
 import com.nminh.websiteinstagram.model.request.PostCreateDTO;
 import com.nminh.websiteinstagram.model.response.ApiResponse;
@@ -22,7 +23,7 @@ public class PostController {
         log.info("Post of  user id is {}", id);
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setData(postService.createPost(id, postCreateDTO));
-        apiResponse.setMessage("Success");
+        apiResponse.setMessage(Constants.SUCCESS);
         return apiResponse;
     }
     // lấy danh sách từ danh sách người mình follow
@@ -31,7 +32,7 @@ public class PostController {
         log.info("Get post from people you follow {}", userId);
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setData(postService.getAllPostsFromFollower(userId));
-        apiResponse.setMessage("Success");
+        apiResponse.setMessage(Constants.SUCCESS);
         return apiResponse;
     }
 

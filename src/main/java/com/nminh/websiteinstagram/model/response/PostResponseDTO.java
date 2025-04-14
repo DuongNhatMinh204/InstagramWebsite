@@ -18,5 +18,6 @@ public class PostResponseDTO {
     private String imageUrl ;
     private Integer totalLikes = 0 ;
     private List<LikeResponseDTO> likes ;
+    private Integer totalComments = 0 ;
     private List<Comment> comments ;
 }

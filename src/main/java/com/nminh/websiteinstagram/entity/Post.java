@@ -38,8 +38,12 @@ public class Post {
 
     @Column(name = "total_like")
     private Integer totalLikes = 0 ;
+
     @OneToMany(mappedBy = "post")
     private List<Like> likes ;
+
+    @Column(name = "total_cmt")
+    private Integer totalComments =0;
 
     @OneToMany(mappedBy = "post")
     private List<Comment> comments ;

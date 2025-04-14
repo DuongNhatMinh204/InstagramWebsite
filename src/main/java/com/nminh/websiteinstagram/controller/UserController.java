@@ -1,5 +1,6 @@
 package com.nminh.websiteinstagram.controller;
 
+import com.nminh.websiteinstagram.constant.Constants;
 import com.nminh.websiteinstagram.entity.User;
 import com.nminh.websiteinstagram.model.request.UserLoginDTO;
 import com.nminh.websiteinstagram.model.request.UserRegisterDTO;
@@ -26,7 +27,7 @@ public class UserController {
     @PostMapping("/register")
     public ApiResponse registerUser(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
         log.info("Registering user: {}", userRegisterDTO);
-        ApiResponse apiResponse = new ApiResponse("create user successful " , userService.createUser(userRegisterDTO));
+        ApiResponse apiResponse = new ApiResponse(Constants.SUCCESS, userService.createUser(userRegisterDTO));
         log.info("Registered user: {}", apiResponse);
         return apiResponse;
     }
@@ -34,7 +35,7 @@ public class UserController {
     @PostMapping("/login")
     public ApiResponse login(@Valid @RequestBody UserLoginDTO userLoginDTO) {
         log.info("Logining user: {}", userLoginDTO);
-        ApiResponse apiResponse = new ApiResponse("login user successful " , userService.loginUser(userLoginDTO));
+        ApiResponse apiResponse = new ApiResponse(Constants.SUCCESS , userService.loginUser(userLoginDTO));
         log.info("Logined user: {}", apiResponse);
         return apiResponse;
     }

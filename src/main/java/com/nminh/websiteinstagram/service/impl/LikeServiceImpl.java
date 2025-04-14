@@ -35,6 +35,7 @@ public class LikeServiceImpl implements LikeService {
         likeRepository.save(like);
 
         post.getLikes().add(like);
+        post.setTotalLikes(post.getTotalLikes() + 1);
         postRepository.save(post);
 
         return "Like Success";

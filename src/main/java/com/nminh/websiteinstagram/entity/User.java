@@ -1,6 +1,7 @@
 package com.nminh.websiteinstagram.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -59,19 +60,24 @@ public class User {
 
     // Danh sách người mình đang theo dõi
     @OneToMany(mappedBy = "follower")
+    @JsonIgnore
     private List<Follow> following;
 
     // Danh sách người đang theo dõi mình
     @OneToMany(mappedBy = "following")
+    @JsonIgnore
     private List<Follow> followers;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Like> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "sender")
