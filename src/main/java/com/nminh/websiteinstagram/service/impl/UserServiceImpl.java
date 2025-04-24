@@ -9,6 +9,8 @@ import com.nminh.websiteinstagram.model.request.UserRegisterDTO;
 import com.nminh.websiteinstagram.repository.UserRepository;
 import com.nminh.websiteinstagram.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,6 +20,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public User createUser(UserRegisterDTO userRegisterDTO) {
@@ -29,6 +33,11 @@ public class UserServiceImpl implements UserService {
         if(!userRegisterDTO.getPassword().equals(userRegisterDTO.getPasswordConfirm())){
             throw new AppException(ErrorCode.PASSSWORD_MISMATCH) ;
         }
+
+        // mã hóa mật khẩu
+        String encodedPassword = passwordEncoder.encode(userRegisterDTO.getPassword());
+        userRegisterDTO.setPassword(encodedPassword);
+
         User user = userMapper.toUser(userRegisterDTO);
 
         return userRepository.save(user);
@@ -42,7 +51,8 @@ public class UserServiceImpl implements UserService {
         }
         User user = userRepository.findByPhone(userLoginDTO.getPhone())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTS)) ;
-        if(!user.getPassword().equals(userLoginDTO.getPassword())){
+        //kiểm tra với mật khẩu mã hóa trong database
+        if(!passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword())){
             throw new AppException(ErrorCode.PASSSWORD_MISMATCH) ;
         }
 

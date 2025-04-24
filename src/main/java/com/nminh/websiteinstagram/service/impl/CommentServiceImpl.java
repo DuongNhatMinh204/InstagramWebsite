@@ -1,5 +1,6 @@
 package com.nminh.websiteinstagram.service.impl;
 
+import com.nminh.websiteinstagram.Utils.SecurityUtil;
 import com.nminh.websiteinstagram.constant.Constants;
 import com.nminh.websiteinstagram.entity.Comment;
 import com.nminh.websiteinstagram.entity.Post;
@@ -22,7 +23,9 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
 
     @Override
-    public String addComment(Long userId, Long postId, CommentCreateDTO commentCreateDTO) {
+    public String addComment( Long postId, CommentCreateDTO commentCreateDTO) {
+        Long userId = SecurityUtil.getCurrentUserId();
+
         User user = userRepository.findById(userId).orElseThrow(()-> new AppException(ErrorCode.USER_NOT_EXISTS));
         Post post = postRepository.findById(postId).orElseThrow(()-> new AppException(ErrorCode.POST_NOT_FOUND));
 

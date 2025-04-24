@@ -2,6 +2,7 @@ package com.nminh.websiteinstagram.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nminh.websiteinstagram.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class User {
     @Column(name = "phone" ,nullable = false)
     private String phone ;
 
+
     @Column(name = "email" ,nullable = false)
     private String email ;
 
@@ -52,6 +54,9 @@ public class User {
 
     @Column(name = "avatar_url")
     private String avatarUrl ;
+
+    @Enumerated(EnumType.STRING)
+    private Role role ;
 
     @Column(name = "created")
     @Temporal(TemporalType.TIMESTAMP)
@@ -81,8 +86,10 @@ public class User {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "sender")
+    @JsonIgnore
     private List<Message> sentMessage = new ArrayList<>();
 
     @OneToMany(mappedBy = "receiver")
+    @JsonIgnore
     private List<Message> receivedMessage = new ArrayList<>();
 }

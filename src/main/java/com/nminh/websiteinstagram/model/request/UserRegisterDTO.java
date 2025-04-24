@@ -1,6 +1,7 @@
 package com.nminh.websiteinstagram.model.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.nminh.websiteinstagram.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -37,4 +38,6 @@ public class UserRegisterDTO {
     private LocalDate birthday ;
     @NotNull(message = "ARGURMENT_NOT_VALID")
     private String gender ;
+
+    private Role role = Role.USER ;
 }
