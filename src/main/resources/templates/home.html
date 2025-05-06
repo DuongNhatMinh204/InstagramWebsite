@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>Trang Chủ - Instagram Clone</title>
+    <style>
+        /* --- CSS Tối Giản Đã Được Tối Ưu --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #fafafa;
+        }
+
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid #dbdbdb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        .nav-items {
+            display: flex;
+            gap: 20px;
+        }
+
+        .main-container {
+            max-width: 935px;
+            margin: 80px auto 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        .posts-feed {
+            flex: 1;
+            max-width: 614px;
+        }
+
+        .post-card {
+            background: #fff;
+            border: 1px solid #dbdbdb;
+            border-radius: 3px;
+            margin-bottom: 24px;
+        }
+
+        .post-header, .post-actions, .post-content, .post-stats, .comments {
+            padding: 14px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #efefef;
+        }
+
+        .post-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 12px;
+            object-fit: cover;
+        }
+
+        .post-image {
+            width: 100%;
+            margin-top: 8px;
+            border-radius: 4px;
+        }
+
+        .post-actions button {
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: #ed4956;
+        }
+
+        .comment {
+            font-size: 14px;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="nav-bar">
+    <h1>Instagram</h1>
+    <div class="nav-items">
+        <span>🏠 Home</span>
+        <span>💬 Messages</span>
+        <span>👤 Profile</span>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main-container">
+    <!-- Feed -->
+    <div class="posts-feed">
+        <div class="post-card">
+            <form id="postForm">
+                <div class="post-header">
+                    <img src="user-avatar.jpg" class="post-avatar" alt="Avatar">
+                    <textarea id="content" placeholder="What's on your mind?" style="width:100%; resize: none;"></textarea>
+                </div>
+                <input type="file" id="imgFile" accept="image/*">
+                <button type="submit">Đăng Bài</button>
+            </form>
+        </div>
+
+        <div id="postsContainer"></div>
+    </div>
+</div>
+
+<!-- Script -->
+<script>
+    document.getElementById("postForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const content = document.getElementById("content").value;
+        const fileInput = document.getElementById("imgFile");
+        let imageUrl = "";
+
+        if (fileInput.files.length > 0) {
+            const formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+
+            const uploadRes = await fetch("http://localhost:8080/api/images/upload", {
+                method: "POST",
+                body: formData
+            });
+
+            imageUrl = await uploadRes.text();
+        }
+
+        const res = await fetch("/v1/user/post/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ content, img_url: imageUrl })
+        });
+
+        const result = await res.json();
+        alert(result.message);
+        document.getElementById("postForm").reset();
+        loadPosts();
+    });
+
+    async function loadPosts() {
+        const res = await fetch("/v1/user/post/getpost", {
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        });
+
+        const data = await res.json();
+        const posts = data.data;
+        const container = document.getElementById("postsContainer");
+        container.innerHTML = "";
+
+        posts.forEach(post => {
+            const postEl = document.createElement("div");
+            postEl.className = "post-card";
+
+            postEl.innerHTML = `
+          <div class="post-header">
+            <img src="${post.url_avatar || 'default-avatar.png'}" class="post-avatar" />
+            <strong>${post.nickname}</strong>
+          </div>
+          <div class="post-content">
+            <p>${post.content}</p>
+            ${post.imageUrl ? `<img src="${post.imageUrl}" class="post-image" />` : ""}
+          </div>
+          <div class="post-actions">
+            <button onclick="likePost(${post.id})">❤️ Thích (${post.totalLikes})</button>
+          </div>
+          <div class="post-stats">
+                <input type="text" placeholder="Viết bình luận..." id="comment-input-${post.id}" style="width: 80%;" />
+                <button onclick="addComment(${post.id})">Gửi</button>
+          </div>
+          <div class="comments">
+            ${post.comments.map(c => `
+              <div class="comment"><strong>${c.nickName}</strong>: ${c.content}</div>
+            `).join("")}
+          </div>
+        `;
+
+            container.appendChild(postEl);
+        });
+    }
+
+    async function likePost(postId) {
+        const res = await fetch(`/v1/user/likepost?postId=${postId}`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        });
+
+        const result = await res.json();
+        // alert(result.message);
+        loadPosts();
+    }
+    async function addComment(postId) {
+        const input = document.getElementById(`comment-input-${postId}`);
+        const content = input.value.trim();
+        if (!content) return;
+
+        const res = await fetch(`/v1/user/cmt/add?postId=${postId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ content })
+        });
+
+        const result = await res.json();
+        alert(result.data); // Hiển thị thông báo thành công
+        input.value = "";
+        loadPosts(); // Tải lại bài viết để hiển thị bình luận mới
+    }
+
+    loadPosts();
+</script>
+</body>
+</html>

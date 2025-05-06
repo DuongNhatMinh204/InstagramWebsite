@@ -33,18 +33,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/v1/user/**","/api/chat/**","/v1/user/chat/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/api/auth/**", "/ws/**","/v1/auth/**","/api/images/upload").permitAll()
+//                        .requestMatchers("/v1/user/**","/api/chat/**","/v1/user/chat/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/chat/**","/v1/user/chat/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/auth/**", "/ws/**","/v1/auth/**","/api/images/upload","/login","/home","/images/**","/*.jpg","/*.css").permitAll()
                         .anyRequest().authenticated()
                 )
-//                .formLogin(form -> form
-//                        .loginPage("/login") // Nếu có custom login page
-//                        .permitAll()
-//                )
-//                .logout(logout -> logout
-//                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-//                        .permitAll()
-//                );
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) ;
 

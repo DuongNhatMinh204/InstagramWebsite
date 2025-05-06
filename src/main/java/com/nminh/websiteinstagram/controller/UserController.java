@@ -54,6 +54,7 @@ public class UserController {
         UserDetails userDetails = userDetailsService.loadUserByUsername(userLoginDTO.getPhone());
         String token = jwtService.generateToken(userDetails);
 
+        log.info("Logged in user: {}", userLoginDTO);
         return ResponseEntity.ok(new JwtResponse(token));
     }
 }

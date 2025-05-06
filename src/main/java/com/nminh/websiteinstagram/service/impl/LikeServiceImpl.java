@@ -30,7 +30,8 @@ public class LikeServiceImpl implements LikeService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTS));
         if(likeRepository.existsByUserAndPost(user, post)) {
-            throw new AppException(ErrorCode.CANNOT_LIKE_TWO_TIMES) ;
+            unlikePost(postId);
+            return "Unlike Post";
         }
         Like like = new Like();
         like.setPost(post);
