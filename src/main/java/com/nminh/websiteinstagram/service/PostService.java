@@ -7,6 +7,6 @@ import com.nminh.websiteinstagram.model.response.PostResponseDTO;
 import java.util.List;
 
 public interface PostService {
-    public PostResponseDTO createPost(Long id, PostCreateDTO postCreateDTO);
-    public List<PostResponseDTO> getAllPostsFromFollower(Long userId);
+     PostResponseDTO createPost( PostCreateDTO postCreateDTO);
+     List<PostResponseDTO> getAllPostsFromFollower();
 }

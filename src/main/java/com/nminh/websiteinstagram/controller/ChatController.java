@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/v1/user/chat")
 public class ChatController {
     private final ChatService chatService;
     private final SimpMessagingTemplate simpMessagingTemplate;
@@ -28,7 +29,7 @@ public class ChatController {
         );
     }
 
-    @PostMapping("/api/chat/send")
+    @PostMapping("/send")
     public ResponseEntity<?> sendMessage(@RequestBody ChatMessageDTO chatMessageDTO) {
         MessageResponseDTO savedMessage = chatService.save(chatMessageDTO);
         // send message to real time
@@ -40,7 +41,7 @@ public class ChatController {
         return ResponseEntity.ok(savedMessage);
     }
 
-    @GetMapping("/api/chat/history")
+    @GetMapping("/history")
     public ResponseEntity<?> getChatHistory(@RequestParam Long  user1Id , @RequestParam Long  user2Id) {
         List<MessageResponseDTO> chatHistory = chatService.getHistory(user1Id,user2Id) ;
         return ResponseEntity.ok(chatHistory);

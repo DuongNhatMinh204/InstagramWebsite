@@ -1,5 +1,6 @@
 package com.nminh.websiteinstagram.service.impl;
 
+import com.nminh.websiteinstagram.Utils.SecurityUtil;
 import com.nminh.websiteinstagram.entity.Follow;
 import com.nminh.websiteinstagram.entity.User;
 import com.nminh.websiteinstagram.enums.ErrorCode;
@@ -30,7 +31,10 @@ public class FollowServiceImpl implements FollowService {
     private UserMapper userMapper;
 
     @Override
-    public String follow(Long userId, Long toFollowingUserId) {
+    public String follow( Long toFollowingUserId) {
+
+        Long userId = SecurityUtil.getCurrentUserId();
+
         if(Objects.equals(userId, toFollowingUserId)){
             throw new AppException(ErrorCode.CANNOT_FOLLOW_YOURSELF) ;
         }
@@ -59,7 +63,9 @@ public class FollowServiceImpl implements FollowService {
         return "Follow Successfully";
     }
     @Override
-    public String unfollow(Long userId, Long toUnfollowingUserId) {
+    public String unfollow( Long toUnfollowingUserId) {
+        Long userId = SecurityUtil.getCurrentUserId();
+
         User userCurrent = userRepository.findById(userId).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
         User userFollowed = userRepository.findById(toUnfollowingUserId).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
 
@@ -77,7 +83,9 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public FollowerResponseDTO getFollowers(Long userId) {
+    public FollowerResponseDTO getFollowers() {
+        Long userId = SecurityUtil.getCurrentUserId();
+
         FollowerResponseDTO followerResponseDTO = new FollowerResponseDTO();
         User user = userRepository.findById(userId).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
 
@@ -94,7 +102,9 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public FollowerResponseDTO getFollowing(Long userId) {
+    public FollowerResponseDTO getFollowing() {
+        Long userId = SecurityUtil.getCurrentUserId();
+
         FollowerResponseDTO followerResponseDTO = new FollowerResponseDTO();
         User user = userRepository.findById(userId).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
         List<UserResponseDTO> userResponseDTOS = new ArrayList<>();

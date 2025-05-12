@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/follow")
+@RequestMapping("/v1/user/follow")
 @Slf4j
 public class FollowController {
 
@@ -16,36 +16,36 @@ public class FollowController {
     private FollowService followService;
 
     @PostMapping("/following")
-    public ApiResponse followTo(@RequestParam Long userId, @RequestParam Long followingUserId) {
-        log.info("Following user {} following {}", userId, followingUserId);
-        ApiResponse apiResponse = new ApiResponse(followService.follow(userId, followingUserId));
-        log.info("Following user {} successfully followed {}", userId, followingUserId);
+    public ApiResponse followTo(@RequestParam Long followingUserId) {
+        log.info("Following user  following {}",  followingUserId);
+        ApiResponse apiResponse = new ApiResponse(followService.follow(followingUserId));
+        log.info("Following user  successfully followed {}", followingUserId);
         return apiResponse;
     }
 
     @DeleteMapping("/unfollowing")
-    public ApiResponse unfollowFrom(@RequestParam Long userId, @RequestParam Long unfollowingUserId) {
-        log.info("Unfollowing user {} following {}", userId, unfollowingUserId);
-        ApiResponse apiResponse = new ApiResponse(followService.unfollow(userId, unfollowingUserId));
-        log.info("Unfollowing user {} successfully unfollowed {}", userId, unfollowingUserId);
+    public ApiResponse unfollowFrom(@RequestParam Long unfollowingUserId) {
+        log.info("Unfollowing user  following {}",  unfollowingUserId);
+        ApiResponse apiResponse = new ApiResponse(followService.unfollow(unfollowingUserId));
+        log.info("Unfollowing user  successfully unfollowed {}",  unfollowingUserId);
         return apiResponse;
     }
 
     // xem danh sách người theo dõi mình
     @GetMapping("/listfollower")
-    public ApiResponse listFollower(@RequestParam Long userId) {
-        log.info("Following user {} listFollower", userId);
-        ApiResponse apiResponse = new ApiResponse(followService.getFollowers(userId));
-        log.info("Following user {} successfully listFollower", userId);
+    public ApiResponse listFollower() {
+        log.info("List follower getting ");
+        ApiResponse apiResponse = new ApiResponse(followService.getFollowers());
+        log.info("Following user  successfully listFollower");
         return apiResponse;
     }
 
     //xem danh sách người mình theo dõi
     @GetMapping("/listfollowing")
-    public ApiResponse listFollowing(@RequestParam Long userId) {
-        log.info("Following user {} listFollowing", userId);
-        ApiResponse apiResponse = new ApiResponse(followService.getFollowing(userId));
-        log.info("Following user {} successfully listFollowing", userId);
+    public ApiResponse listFollowing() {
+        log.info("Following user  listFollowing");
+        ApiResponse apiResponse = new ApiResponse(followService.getFollowing());
+        log.info("Following user successfully listFollowing");
         return apiResponse;
     }
 }

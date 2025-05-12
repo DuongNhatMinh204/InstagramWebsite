@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>Trang Chủ - Instagram Clone</title>
+    <link rel="stylesheet" href="/css/home.css">
+
+</head>
+<body>
+<!-- Navigation -->
+<nav class="nav-bar">
+    <h1>Instagram</h1>
+    <div class="nav-items">
+        <span>🏠 Home</span>
+        <span>💬 Messages</span>
+        <span>👤 Profile</span>
+    </div>
+</nav>
+
+<div class="main-container">
+    <div class="posts-feed">
+        <div class="post-card">
+            <form id="postForm">
+                <div class="post-header">
+                    <img src="user-avatar.jpg" class="post-avatar" alt="Avatar">
+                    <textarea id="content" placeholder="What's on your mind?" style="width:100%; resize: none;"></textarea>
+                </div>
+                <input type="file" id="imgFile" accept="image/*">
+                <button type="submit">Đăng Bài</button>
+            </form>
+        </div>
+
+        <div id="postsContainer"></div>
+    </div>
+</div>
+<script src="/js/home.js"></script>
+
+</body>
+</html>

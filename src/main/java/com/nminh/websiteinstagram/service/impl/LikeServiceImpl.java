@@ -1,5 +1,6 @@
 package com.nminh.websiteinstagram.service.impl;
 
+import com.nminh.websiteinstagram.Utils.SecurityUtil;
 import com.nminh.websiteinstagram.entity.Like;
 import com.nminh.websiteinstagram.entity.Post;
 import com.nminh.websiteinstagram.entity.User;
@@ -23,11 +24,14 @@ public class LikeServiceImpl implements LikeService {
     private UserRepository userRepository;
 
     @Override
-    public String likePost(Long postId, Long userId) {
+    public String likePost(Long postId) {
+        Long userId = SecurityUtil.getCurrentUserId();
+
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTS));
         if(likeRepository.existsByUserAndPost(user, post)) {
-            throw new AppException(ErrorCode.CANNOT_LIKE_TWO_TIMES) ;
+            unlikePost(postId);
+            return "Unlike Post";
         }
         Like like = new Like();
         like.setPost(post);
@@ -42,7 +46,8 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
-    public String unlikePost(Long postId, Long userId) {
+    public String unlikePost(Long postId) {
+        Long userId = SecurityUtil.getCurrentUserId();
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTS));
         Like like = likeRepository.findByUserAndPost(user,post).orElseThrow(()->new AppException(ErrorCode.CANNOT_FOUND_LIKE)) ;
@@ -51,5 +56,23 @@ public class LikeServiceImpl implements LikeService {
         post.getLikes().remove(like);
         postRepository.save(post);
         return "Unlike Success";
+    }
+
+    @Override
+    public boolean hasUserLikedPost(Long postId) {
+        Long userId = SecurityUtil.getCurrentUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTS));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        Like like = likeRepository.findByUserAndPost(user,post).orElse(null);
+        if(like != null) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Integer countLike(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        return likeRepository.countByPost(post);
     }
 }

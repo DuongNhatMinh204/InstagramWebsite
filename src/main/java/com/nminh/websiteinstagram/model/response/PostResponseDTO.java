@@ -14,6 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 public class PostResponseDTO {
     private Long id ;
+    private String url_avatar;
+    private String nickname;
     private String content ;
     private String imageUrl ;
     private Integer totalLikes = 0 ;
