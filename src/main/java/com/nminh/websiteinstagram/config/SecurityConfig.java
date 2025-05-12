@@ -3,6 +3,7 @@ package com.nminh.websiteinstagram.config;
 import com.nminh.websiteinstagram.security.CustomUserDetailsService;
 import com.nminh.websiteinstagram.security.JWTService;
 import com.nminh.websiteinstagram.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,13 +36,29 @@ public class SecurityConfig {
                         .requestMatchers("/v1/admin/**").hasRole("ADMIN")
 //                        .requestMatchers("/v1/user/**","/api/chat/**","/v1/user/chat/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/chat/**","/v1/user/chat/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/api/auth/**", "/ws/**","/v1/auth/**","/api/images/upload","/login","/home","/images/**","/*.jpg","/*.css").permitAll()
+                        .requestMatchers("/api/auth/**",
+                                "/ws/**","/v1/auth/**",
+                                "/api/images/upload",
+                                "/login",
+                                "/home",
+                                "/images/**",
+                                "/*.jpg"
+                                ).permitAll()
+                                .requestMatchers(this::isStaticResource).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) ;
 
         return http.build();
+    }
+
+    private boolean isStaticResource(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.endsWith(".css") ||
+                path.endsWith(".js") ||
+                path.endsWith(".jpg") ||
+                path.endsWith(".png");
     }
     @Bean
     public AuthenticationManager authManager(

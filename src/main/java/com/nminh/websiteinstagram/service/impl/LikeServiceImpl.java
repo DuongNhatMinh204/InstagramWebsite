@@ -57,4 +57,22 @@ public class LikeServiceImpl implements LikeService {
         postRepository.save(post);
         return "Unlike Success";
     }
+
+    @Override
+    public boolean hasUserLikedPost(Long postId) {
+        Long userId = SecurityUtil.getCurrentUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTS));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        Like like = likeRepository.findByUserAndPost(user,post).orElse(null);
+        if(like != null) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Integer countLike(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        return likeRepository.countByPost(post);
+    }
 }

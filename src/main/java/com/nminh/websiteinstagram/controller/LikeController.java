@@ -27,4 +27,14 @@ public class LikeController {
         log.info("Unliked post id: " + postId );
         return apiResponse;
     }
+    @GetMapping("/check-liked")
+    public ApiResponse checkLiked(@RequestParam Long postId) {
+        boolean liked = likeService.hasUserLikedPost(postId);
+        return new ApiResponse(liked);
+    }
+    @GetMapping("/count-liked")
+    public ApiResponse countLiked(@RequestParam Long postId) {
+        log.info("Count liked posts");
+        return new ApiResponse(likeService.countLike(postId));
+    }
 }
