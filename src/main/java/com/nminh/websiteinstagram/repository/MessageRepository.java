@@ -15,4 +15,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             " OR m.sender = :user2 AND m.receiver = :user1 " +
             "ORDER BY m.timestamp ASC" )
     List<Message> findChatBeetweenUser(User user1, User user2);
+
+    @Query(value = "SELECT * FROM Message m where m.sender_id = :userId OR m.receiver_id = :userId", nativeQuery = true)
+    List<Message> findBySenderOrReceiver(Long userId);
 }
