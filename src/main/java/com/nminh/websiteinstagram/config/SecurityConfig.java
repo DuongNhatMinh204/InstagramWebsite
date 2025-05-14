@@ -1,13 +1,11 @@
 package com.nminh.websiteinstagram.config;
 
 import com.nminh.websiteinstagram.security.CustomUserDetailsService;
-import com.nminh.websiteinstagram.security.JWTService;
 import com.nminh.websiteinstagram.security.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -42,9 +40,15 @@ public class SecurityConfig {
                                 "/login",
                                 "/home",
                                 "/images/**",
-                                "/*.jpg"
+                                "/*.jpg",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/swagger-resources/**",
+                                "/webjars/**"
                                 ).permitAll()
                                 .requestMatchers(this::isStaticResource).permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
