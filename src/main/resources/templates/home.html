@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <title>Trang Chủ - Instagram Clone</title>
     <link rel="stylesheet" href="/css/home.css">
-
 </head>
 <body>
 <!-- Navigation -->
@@ -16,7 +15,7 @@
         <!-- Modal -->
         <div id="chatModal" class="modal">
             <div class="modal-content">
-                <span class="close">&times;</span>
+                <span class="close">×</span>
                 <h3>Đoạn chat</h3>
                 <input type="text" placeholder="Tìm kiếm trên Messenger..." class="search-box">
                 <div class="chat-list" id="chatList">
@@ -27,6 +26,16 @@
         <span>👤 Profile</span>
     </div>
 </nav>
+<!-- Modal hiển thị chi tiết đoạn chat với 1 người -->
+<div id="chatDetailModal" class="modal chat-detail-modal">
+    <div class="modal-content">
+        <span class="closeDetail">×</span>
+        <h3><span id="chatWithName"></span></h3>
+        <div id="chatMessages" style="height: 300px; overflow-y: scroll;"></div>
+        <input type="text" id="chatInput" placeholder="Nhập tin nhắn...">
+        <button id="sendChatBtn">Gửi</button>
+    </div>
+</div>
 
 <div class="main-container">
     <div class="posts-feed">
@@ -40,11 +49,13 @@
                 <button type="submit">Đăng Bài</button>
             </form>
         </div>
-
         <div id="postsContainer"></div>
     </div>
 </div>
 
+<!-- Thêm thư viện sockjs-client và stompjs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="/js/home.js"></script>
 <script src="/js/chat.js"></script>
 </body>

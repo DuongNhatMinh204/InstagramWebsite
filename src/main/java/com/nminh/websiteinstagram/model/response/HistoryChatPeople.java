@@ -10,6 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HistoryChatPeople {
+    private Long id ;
     private String avatar_url;
     private String username;
 }

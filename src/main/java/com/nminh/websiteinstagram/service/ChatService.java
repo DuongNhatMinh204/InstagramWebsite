@@ -48,8 +48,9 @@ public class ChatService {
         return messageResponseDTO ;
     }
 
-    public List<MessageResponseDTO> getHistory(Long userId1 , Long userId2) {
-        User user1 = userRepository.findById(userId1).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
+    public List<MessageResponseDTO> getHistory( Long userId2) {
+        Long user1Id = SecurityUtil.getCurrentUserId() ;
+        User user1 = userRepository.findById(user1Id).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
         User user2 = userRepository.findById(userId2).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
 
         List <Message> messages = messageRepository.findChatBeetweenUser(user1, user2);
@@ -81,6 +82,7 @@ public class ChatService {
             // Chỉ thêm user đối phương nếu chưa tồn tại trong Map
             uniqueUsers.computeIfAbsent(otherUser.getId(), k -> {
                 HistoryChatPeople history = new HistoryChatPeople();
+                history.setId(otherUser.getId()) ;
                 history.setAvatar_url(otherUser.getAvatarUrl());
                 history.setUsername(otherUser.getNickName());
                 return history;

@@ -43,8 +43,8 @@ public class ChatController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<?> getChatHistory(@RequestParam Long  user1Id , @RequestParam Long  user2Id) {
-        List<MessageResponseDTO> chatHistory = chatService.getHistory(user1Id,user2Id) ;
+    public ResponseEntity<?> getChatHistory( @RequestParam Long  user2Id) {
+        List<MessageResponseDTO> chatHistory = chatService.getHistory(user2Id) ;
         return ResponseEntity.ok(chatHistory);
     }
 
