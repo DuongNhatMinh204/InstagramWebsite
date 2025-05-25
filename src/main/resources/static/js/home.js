@@ -31,53 +31,6 @@ document.getElementById("postForm").addEventListener("submit", async function (e
     loadPosts();
 });
 
-// async function loadPosts() {
-//     const res = await fetch("/v1/user/post/getpost", {
-//         headers: {
-//             "Authorization": "Bearer " + localStorage.getItem("token")
-//         }
-//     });
-//
-//     const data = await res.json();
-//     const posts = data.data;
-//     const container = document.getElementById("postsContainer");
-//     container.innerHTML = "";
-//
-//     posts.forEach(post => {
-//         const postEl = document.createElement("div");
-//         postEl.className = "post-card";
-//
-//         const heartIcon = post.isLiked ? "❤️" : "🖤";
-//
-//         postEl.innerHTML = `
-//             <div class="post-header">
-//                 <img src="${post.url_avatar || 'default-avatar.png'}" class="post-avatar" />
-//                 <strong>${post.nickname}</strong>
-//             </div>
-//             <div class="post-content">
-//                 <p>${post.content}</p>
-//                 ${post.imageUrl ? `<img src="${post.imageUrl}" class="post-image" />` : ""}
-//             </div>
-//             <div class="post-actions">
-//                 <button onclick="toggleLike(${post.id}, ${post.isLiked})" id="like-btn-${post.id}">
-//                     ${heartIcon} Thích (${post.totalLikes})
-//                 </button>
-//             </div>
-//             <div class="post-stats">
-//                 <input type="text" placeholder="Viết bình luận..." id="comment-input-${post.id}" style="width: 80%;" />
-//                 <button onclick="addComment(${post.id})">Gửi</button>
-//             </div>
-//             <div class="comments">
-//                 ${post.comments.map(c => `
-//                     <div class="comment"><strong>${c.nickName}</strong>: ${c.content}</div>
-//                 `).join("")}
-//             </div>
-//         `;
-//
-//         container.appendChild(postEl);
-//     });
-// }
-
 async function loadPosts() {
     const res = await fetch("/v1/user/post/getpost", {
         headers: {

@@ -6,6 +6,8 @@ import com.nminh.websiteinstagram.model.request.UserLoginDTO;
 import com.nminh.websiteinstagram.model.request.UserRegisterDTO;
 import com.nminh.websiteinstagram.model.response.ApiResponse;
 import com.nminh.websiteinstagram.model.response.JwtResponse;
+import com.nminh.websiteinstagram.model.response.UserLoginResponseDTO;
+import com.nminh.websiteinstagram.security.CustomUserDetails;
 import com.nminh.websiteinstagram.security.CustomUserDetailsService;
 import com.nminh.websiteinstagram.security.JWTService;
 import com.nminh.websiteinstagram.service.UserService;
@@ -16,12 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/auth")
@@ -56,5 +57,21 @@ public class UserController {
 
         log.info("Logged in user: {}", userLoginDTO);
         return ResponseEntity.ok(new JwtResponse(token));
+    }
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser() {
+        // Lấy thông tin xác thực từ SecurityContext
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() == "anonymousUser") {
+            return ResponseEntity.status(401).body("Chưa đăng nhập hoặc token không hợp lệ");
+        }
+
+        // Lấy thông tin người dùng từ CustomUserDetails
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getId();
+        String phone = userDetails.getUsername();
+
+        // Trả về thông tin người dùng
+        return ResponseEntity.ok(new UserLoginResponseDTO(userId, phone));
     }
 }

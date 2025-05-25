@@ -2,6 +2,7 @@ package com.nminh.websiteinstagram.controller;
 
 import com.nminh.websiteinstagram.entity.Message;
 import com.nminh.websiteinstagram.model.request.ChatMessageDTO;
+import com.nminh.websiteinstagram.model.response.ApiResponse;
 import com.nminh.websiteinstagram.model.response.MessageResponseDTO;
 import com.nminh.websiteinstagram.service.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +43,16 @@ public class ChatController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<?> getChatHistory(@RequestParam Long  user1Id , @RequestParam Long  user2Id) {
-        List<MessageResponseDTO> chatHistory = chatService.getHistory(user1Id,user2Id) ;
+    public ResponseEntity<?> getChatHistory( @RequestParam Long  user2Id) {
+        List<MessageResponseDTO> chatHistory = chatService.getHistory(user2Id) ;
         return ResponseEntity.ok(chatHistory);
+    }
+
+    // lấy danh sách những người đã từng nhắn tin với mình
+    @GetMapping("/history-people")
+    public ApiResponse getPeopleMessage(){
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setData(chatService.getHistoryPeople());
+        return apiResponse;
     }
 }
