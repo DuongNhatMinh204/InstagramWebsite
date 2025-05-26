@@ -13,4 +13,10 @@ public class WebController {
     public String loginPage() {
         return "login"; // src/main/resources/templates/login.html
     }
+
+    @GetMapping("/register")
+    public String registerPage() {
+        return "register";
+    }
+
 }

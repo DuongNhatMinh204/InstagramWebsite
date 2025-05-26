@@ -3,15 +3,25 @@ package com.nminh.websiteinstagram.service.impl;
 import com.nminh.websiteinstagram.entity.User;
 import com.nminh.websiteinstagram.enums.ErrorCode;
 import com.nminh.websiteinstagram.exception.AppException;
+import com.nminh.websiteinstagram.mapper.SearchByNickNameMapper;
 import com.nminh.websiteinstagram.mapper.UserMapper;
 import com.nminh.websiteinstagram.model.request.UserLoginDTO;
 import com.nminh.websiteinstagram.model.request.UserRegisterDTO;
+import com.nminh.websiteinstagram.model.response.SearchByNickNameDto;
+import com.nminh.websiteinstagram.model.response.UserSuggestionDto;
+import com.nminh.websiteinstagram.repository.FollowRepository;
 import com.nminh.websiteinstagram.repository.UserRepository;
 import com.nminh.websiteinstagram.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -21,6 +31,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private FollowRepository followRepository;
+
+    @Autowired
+    private SearchByNickNameMapper searchByNickNameMapper;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
@@ -57,5 +72,35 @@ public class UserServiceImpl implements UserService {
         }
 
         return user;
+    }
+    @Override
+    public List<SearchByNickNameDto> searchUsersByNickname(String nickName) {
+        // Tìm kiếm chính xác (không phân biệt hoa thường)
+        List<User> exactMatch = userRepository.findByNickNameContainingIgnoreCase(nickName);
+        // Tìm kiếm gần đúng (chứa chuỗi, không phân biệt hoa thường)
+        List<User> partialMatches = userRepository.findByNickNameContainingIgnoreCase(nickName);
+        Set<User> combinedResults = new LinkedHashSet<>();
+        combinedResults.addAll(exactMatch);
+        combinedResults.addAll(partialMatches);
+
+        return searchByNickNameMapper.usersToUserDtos(new ArrayList<>(combinedResults));
+
+    }
+    @Override
+    public List<UserSuggestionDto> getUnfollowedSuggestions(Long currentUserId, int limit) {
+        // 1. Lấy danh sách ID đã follow
+//        List<Long> followedIds = followRepository.findFollowingIdsByFollowerId(currentUserId);
+        List<Long> followingIds = followRepository.findFollowingIdsByFollowerId(currentUserId);
+
+        // 2. Thêm cả ID bản thân
+        followingIds.add(currentUserId);
+
+        // 3. Lấy ngẫu nhiên user chưa follow
+        List<User> suggestions = userRepository.findRandomUsersNotInIds(followingIds, limit);
+
+        // 4. Map sang DTO
+        return suggestions.stream()
+                .map(user -> userMapper.toSuggestionDto(user, currentUserId))
+                .collect(Collectors.toList());
     }
 }

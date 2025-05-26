@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" th:href="@{/css/register.css}">
+</head>
+<body>
+<div class="register-container">
+    <h2>Register</h2>
+    <form id="registerForm">
+        <div class="form-group">
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone" required />
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required />
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required />
+        </div>
+        <div class="form-group">
+            <label for="passwordConfirm">Confirm Password:</label>
+            <input type="password" id="passwordConfirm" name="passwordConfirm" required />
+        </div>
+        <div class="form-group">
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" name="fullName" required />
+        </div>
+        <div class="form-group">
+            <label for="nickName">Nickname:</label>
+            <input type="text" id="nickName" name="nickName" required />
+        </div>
+        <div class="form-group">
+            <label for="birthday">Birthday:</label>
+            <input type="date" id="birthday" name="birthday" min="1800-01-01" max="2025-05-25" required />
+        </div>
+        <div class="form-group">
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="nam">Nam</option>
+                <option value="nu">Nữ</option>
+                <option value="khac">Khác</option>
+            </select>
+        </div>
+        <input type="hidden" name="role" value="USER" />
+        <button type="submit">Register</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        // Get and trim form values
+        const phone = this.phone.value.trim();
+        const email = this.email.value.trim();
+        const password = this.password.value.trim();
+        const passwordConfirm = this.passwordConfirm.value.trim();
+        const fullName = this.fullName.value.trim();
+        const nickName = this.nickName.value.trim();
+        const birthdayInput = this.birthday.value.trim();
+        const gender = this.gender.value;
+        const role = this.role.value;
+
+        // Debug
+        console.log('Form Data:', { phone, email, password, passwordConfirm, fullName, nickName, birthdayInput, gender, role });
+
+        // Validate password match
+        if (password !== passwordConfirm) {
+            alert("Mật khẩu xác nhận không khớp!");
+            this.passwordConfirm.focus();
+            return;
+        }
+
+        // Thay thế phần format birthday
+        const birthdayDate = birthdayInput ? new Date(birthdayInput) : null;
+        const formattedBirthday = birthdayDate ?
+            `${String(birthdayDate.getDate()).padStart(2, '0')}-${String(birthdayDate.getMonth() + 1).padStart(2, '0')}-${birthdayDate.getFullYear()}`
+            : '';
+
+        // Validate year >= 1800
+        const year = parseInt(birthdayInput.split('-')[0], 10);
+        if (year < 1800) {
+            alert("Ngày sinh phải từ năm 1800 trở đi!");
+            this.birthday.focus();
+            return;
+        }
+
+        // Send POST request to /v1/auth/register
+        fetch("/v1/auth/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                phone,
+                email,
+                password,
+                passwordConfirm,
+                fullName,
+                nickName,
+                birthday: formattedBirthday,
+                gender,
+                role
+            })
+        })
+            .then(res => {
+                if (!res.ok) {
+                    // Thử đọc response dưới dạng text trước khi parse JSON
+                    return res.text().then(text => {
+                        try {
+                            const errData = text ? JSON.parse(text) : {};
+                            throw new Error(errData.message || 'Registration failed');
+                        } catch {
+                            throw new Error(text || 'Registration failed');
+                        }
+                    });
+                }
+                return res.json();
+            })
+            .then(data => {
+                // Save token to localStorage
+                localStorage.setItem("token", data.token);
+
+                // Fetch user info with token
+                return fetch("/v1/auth/me", {
+                    headers: {
+                        "Authorization": "Bearer " + data.token
+                    }
+                });
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to fetch user data');
+                return res.json();
+            })
+            .then(userData => {
+                // Save userId and redirect
+                localStorage.setItem("userId", userData.id);
+                window.location.href = "/home";
+            })
+            .catch(err => {
+                console.error('Full error:', err);
+                console.log('Response status:', err.response?.status);
+                console.log('Response text:', err.response?.text());
+                alert(`Đăng ký thất bại: ${err.message}`);
+            });
+    });
+</script>
+</body>
+</html>

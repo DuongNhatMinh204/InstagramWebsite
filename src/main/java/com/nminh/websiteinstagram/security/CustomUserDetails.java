@@ -19,6 +19,9 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_"+ user.getRole().name()));
     }
+    public User getUser() {
+        return user;
+    }
 
     public Long getId(){
         return user.getId();
@@ -51,4 +54,5 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }
