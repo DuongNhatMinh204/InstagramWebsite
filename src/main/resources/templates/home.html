@@ -30,7 +30,10 @@
 <div id="chatDetailModal" class="modal chat-detail-modal">
     <div class="modal-content">
         <span class="closeDetail">×</span>
-        <h3><span id="chatWithName"></span></h3>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <img id="chatHeaderAvatar" src="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+            <h3 style="margin:0;"><span id="chatWithName"></span></h3>
+        </div>
         <div id="chatMessages" style="height: 300px; overflow-y: scroll;"></div>
         <input type="text" id="chatInput" placeholder="Nhập tin nhắn...">
         <button id="sendChatBtn">Gửi</button>
@@ -54,8 +57,8 @@
     </div>
 </div>
 
-<div class="main-container">
-    <div class="posts-feed">
+<div class="main-container" style="display: flex; justify-content: center; align-items: flex-start;">
+    <div class="posts-feed" style="margin-right: 32px;">
         <div class="post-card">
             <form id="postForm">
                 <div class="post-header">
@@ -67,6 +70,12 @@
             </form>
         </div>
         <div id="postsContainer"></div>
+    </div>
+    <div class="contacts-list" style="width: 280px; margin-left: 2px; margin-top: 220px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 16px; min-height: 500px;">
+        <h3 style="margin-top:0;">Người liên hệ</h3>
+        <div id="followingsList">
+            <div style="color:#888;">Đang tải...</div>
+        </div>
     </div>
 </div>
 
@@ -88,10 +97,41 @@ if (token) {
         document.getElementById("currentUserAvatar").src = user.avatarUrl || "/images/logo.jpg";
     });
 }
-</script>
-</body>
-</html>
 
+function renderFollowings() {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    fetch("/v1/profile/followings", {
+        headers: { "Authorization": "Bearer " + token }
+    })
+    .then(res => res.json())
+    .then(data => {
+        const list = document.getElementById("followingsList");
+        const users = data.data && data.data.data ? data.data.data : [];
+        if (users.length === 0) {
+            list.innerHTML = '<div style="color:#888;">Bạn chưa follow ai.</div>';
+            return;
+        }
+        list.innerHTML = users.map(user => `
+            <div class="contact-item" style="display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer;border-radius:6px;transition:background 0.2s;" onclick="openChatModalWith('${user.nickName}','${user.avatarUrl || '/images/logo.jpg'}','${user.id}')">
+                <img src="${user.avatarUrl || '/images/logo.jpg'}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">
+                <span style="font-weight:500;">${user.nickName}</span>
+            </div>
+        `).join('');
+    });
+}
+renderFollowings();
+
+// Hàm mở modal chat với người được chọn
+function openChatModalWith(nickName, avatarUrl, userId) {
+    document.getElementById('chatModal').style.display = 'none';
+    document.getElementById('chatDetailModal').style.display = 'block';
+    document.getElementById('chatWithName').innerText = nickName;
+    document.getElementById('chatHeaderAvatar').src = avatarUrl || '/images/logo.jpg';
+    if (window.loadChatHistory) window.loadChatHistory(userId, avatarUrl);
+    if (window.setCurrentChatUserId) window.setCurrentChatUserId(userId);
+}
+</script>
 <style>
 .posts-feed {
             width: 100%;
@@ -105,4 +145,15 @@ if (token) {
         #postsContainer .post {
             margin: 16px auto;
         }
+.contacts-list {
+    position: sticky;
+    top: 80px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.contact-item:hover {
+    background: #f0f2f5;
+}
 </style>
+</body>
+</html>

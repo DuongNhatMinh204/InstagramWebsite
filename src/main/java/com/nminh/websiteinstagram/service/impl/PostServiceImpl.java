@@ -58,6 +58,7 @@ public class PostServiceImpl implements PostService {
             postResponseDTO.setUrl_avatar(user.getAvatarUrl()); // avt nguoi dang
             postResponseDTO.setNickname(user.getNickName());
             postResponseDTO.setImageUrl(post.getImageUrl());
+            postResponseDTO.setCreatedAt(String.valueOf(post.getCreated()));
             postResponseDTOS.add(postResponseDTO);
         }
         // lấy danh sách người mình follow
@@ -79,6 +80,7 @@ public class PostServiceImpl implements PostService {
                 postResponseDTO.setUrl_avatar(userFollowed.getAvatarUrl()); // avt nguoi dang
                 postResponseDTO.setNickname(userFollowed.getNickName());
                 postResponseDTO.setImageUrl(post.getImageUrl());
+                postResponseDTO.setCreatedAt(String.valueOf(post.getCreated()));
                 postResponseDTOS.add(postResponseDTO);
             }
         }

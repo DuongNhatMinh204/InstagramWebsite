@@ -22,4 +22,5 @@ public class PostResponseDTO {
     private List<LikeResponseDTO> likes ;
     private Integer totalComments = 0 ;
     private List<Comment> comments ;
+    private String createdAt;
 }

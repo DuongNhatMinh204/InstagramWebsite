@@ -39,7 +39,8 @@ async function loadPosts() {
     });
 
     const data = await res.json();
-    const posts = data.data;
+    let posts = data.data;
+    posts = posts.sort((a, b) => new Date(b.created_at || b.createdAt) - new Date(a.created_at || a.createdAt));
     const container = document.getElementById("postsContainer");
     container.innerHTML = "";
 
@@ -54,13 +55,31 @@ async function loadPosts() {
         const isLiked = checkLikeData.data;
         const heartIcon = isLiked ? "❤️" : "🖤";
 
+        // Tính thời gian đăng
+        let timeAgo = "";
+        if (post.created_at || post.createdAt) {
+            const created = new Date(post.created_at || post.createdAt);
+            const now = new Date();
+            const diffMs = now - created;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMins / 60);
+            const diffDays = Math.floor(diffHours / 24);
+            if (diffMins < 1) timeAgo = "Vừa xong";
+            else if (diffMins < 60) timeAgo = `${diffMins}p`;
+            else if (diffHours < 24) timeAgo = `${diffHours}h`;
+            else timeAgo = `${diffDays}d`;
+        }
+
         const postEl = document.createElement("div");
         postEl.className = "post-card";
 
         postEl.innerHTML = `
             <div class="post-header">
                 <img src="${post.url_avatar || 'default-avatar.png'}" class="post-avatar" />
-                <strong>${post.nickname}</strong>
+                <div style="display:flex;flex-direction:column;">
+                  <strong>${post.nickname}</strong>
+                  <span style="font-size:12px;color:#888;">${timeAgo}</span>
+                </div>
             </div>
             <div class="post-content">
                 <p>${post.content}</p>

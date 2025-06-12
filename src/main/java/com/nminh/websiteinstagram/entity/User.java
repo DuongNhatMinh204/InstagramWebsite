@@ -92,4 +92,6 @@ public class User {
     @OneToMany(mappedBy = "receiver")
     @JsonIgnore
     private List<Message> receivedMessage = new ArrayList<>();
+
+
 }

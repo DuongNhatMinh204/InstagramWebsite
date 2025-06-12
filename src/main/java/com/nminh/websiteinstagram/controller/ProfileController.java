@@ -29,6 +29,13 @@ public class ProfileController {
         ApiResponse apiResponse = new ApiResponse(profileService.upLoadAvt(pathUrl));
         log.info("end uploadAvatar");
         return apiResponse;
+    }
 
+    @GetMapping("/followings")
+    public ApiResponse getFollowingsOfUserLogin() {
+        log.info("getFollowingsOfUserLogin");
+        ApiResponse apiResponse = new ApiResponse(profileService.getFollowings());
+        log.info("getFollowingsOfUserLoginSuccessfully");
+        return apiResponse;
     }
 }

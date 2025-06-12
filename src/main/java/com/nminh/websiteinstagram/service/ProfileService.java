@@ -10,4 +10,5 @@ public interface ProfileService {
 
     Object upLoadAvt(String pathUrl);
 
+    Object getFollowings();
 }

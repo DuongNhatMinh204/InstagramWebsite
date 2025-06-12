@@ -1,12 +1,14 @@
 package com.nminh.websiteinstagram.service.impl;
 
 import com.nminh.websiteinstagram.Utils.SecurityUtil;
+import com.nminh.websiteinstagram.entity.Follow;
 import com.nminh.websiteinstagram.entity.Post;
 import com.nminh.websiteinstagram.entity.User;
 import com.nminh.websiteinstagram.enums.ErrorCode;
 import com.nminh.websiteinstagram.exception.AppException;
 import com.nminh.websiteinstagram.mapper.PostMapper;
 import com.nminh.websiteinstagram.model.response.PostResponseDTO;
+import com.nminh.websiteinstagram.model.response.UserResponseDTO;
 import com.nminh.websiteinstagram.repository.UserRepository;
 import com.nminh.websiteinstagram.service.ProfileService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -54,5 +58,20 @@ public class ProfileServiceImpl implements ProfileService {
        user.setAvatarUrl(pathUrl);
        userRepository.save(user);
        return "ok";
+    }
+
+    @Override
+    public Object getFollowings() {
+        List<User> userResponseDTOS = new ArrayList<>();
+        Long userId = SecurityUtil.getCurrentUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTS));
+        List<Follow> follows = user.getFollowing();
+        for (Follow following : follows) {
+            User followingUser = userRepository.findById(following.getFollowing().getId()).orElseThrow(()-> new AppException(ErrorCode.USER_NOT_EXISTS));
+            userResponseDTOS.add(followingUser);
+        }
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", userResponseDTOS);
+        return result;
     }
 }
