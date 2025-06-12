@@ -1,5 +1,6 @@
 package com.nminh.websiteinstagram.controller;
 
+import com.nminh.websiteinstagram.Utils.SecurityUtil;
 import com.nminh.websiteinstagram.constant.Constants;
 import com.nminh.websiteinstagram.entity.User;
 import com.nminh.websiteinstagram.model.request.UserLoginDTO;
@@ -73,5 +74,10 @@ public class UserController {
 
         // Trả về thông tin người dùng
         return ResponseEntity.ok(new UserLoginResponseDTO(userId, phone));
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<?> getUserInfo() {
+        return userService.getInfo() ;
     }
 }

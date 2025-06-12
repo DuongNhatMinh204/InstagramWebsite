@@ -23,7 +23,7 @@
                 </div>
             </div>
         </div>
-        <span>👤 Profile</span>
+        <button id="openProfileModal">👤 Profile</button>
     </div>
 </nav>
 <!-- Modal hiển thị chi tiết đoạn chat với 1 người -->
@@ -36,13 +36,30 @@
         <button id="sendChatBtn">Gửi</button>
     </div>
 </div>
+<!-- Profile Modal -->
+<div id="profileModal" class="modal">
+    <div class="modal-content profile-modal-content">
+        <span class="closeProfile">×</span>
+        <div class="profile-header">
+            <button id="viewProfileBtn">Xem tất cả trang cá nhân</button>
+        </div>
+        <hr />
+        <div class="profile-options">
+            <div class="option">⚙️ Cài đặt & quyền riêng tư</div>
+            <div class="option">❓ Trợ giúp và hỗ trợ</div>
+            <div class="option">🌙 Màn hình & trợ năng</div>
+            <div class="option">💬 Đóng góp ý kiến</div>
+            <div class="option">🚪 Đăng xuất</div>
+        </div>
+    </div>
+</div>
 
 <div class="main-container">
     <div class="posts-feed">
         <div class="post-card">
             <form id="postForm">
                 <div class="post-header">
-                    <img src="user-avatar.jpg" class="post-avatar" alt="Avatar">
+                    <img id="currentUserAvatar" src="" class="post-avatar" alt="Avatar">
                     <textarea id="content" placeholder="What's on your mind?" style="width:100%; resize: none;"></textarea>
                 </div>
                 <input type="file" id="imgFile" accept="image/*">
@@ -58,5 +75,34 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="/js/home.js"></script>
 <script src="/js/chat.js"></script>
+<script src="/js/profile.js"></script>
+<script>
+// Lấy avatar người dùng hiện tại và gán vào phần đăng bài
+const token = localStorage.getItem("token");
+if (token) {
+    fetch("/v1/auth/info", {
+        headers: { "Authorization": "Bearer " + token }
+    })
+    .then(res => res.json())
+    .then(user => {
+        document.getElementById("currentUserAvatar").src = user.avatarUrl || "/images/logo.jpg";
+    });
+}
+</script>
 </body>
 </html>
+
+<style>
+.posts-feed {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .post-card, #postsContainer .post {
+            width: 100%;
+            max-width: 650px;
+        }
+        #postsContainer .post {
+            margin: 16px auto;
+        }
+</style>

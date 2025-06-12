@@ -53,6 +53,7 @@ public class PostServiceImpl implements PostService {
         User user = userRepository.findById(userId).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
 
         for(Post post : user.getPosts()){
+            post.setTotalLikes(post.getLikes().size()); // đếm số lượng like của bài viết
             PostResponseDTO postResponseDTO = postMapper.toPostResponseDTO(post);
             postResponseDTO.setUrl_avatar(user.getAvatarUrl()); // avt nguoi dang
             postResponseDTO.setNickname(user.getNickName());

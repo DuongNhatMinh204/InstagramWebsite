@@ -33,18 +33,23 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v1/admin/**").hasRole("ADMIN")
-//                        .requestMatchers("/v1/user/**","/api/chat/**","/v1/user/chat/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/api/chat/**","/v1/user/chat/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/api/auth/**",
-                                "/ws/**","/v1/auth/**",
+                        .requestMatchers(
+                                "/images/**",
+                                "/css/**",
+                                "/js/**",
+                                "/static/**",
+                                "/*.jpg",
+                                "/*.png",
+                                "/api/auth/**",
+                                "/ws/**",
+                                "/v1/auth/**",
                                 "/api/images/upload",
                                 "/login",
                                 "/home",
-                                "/images/**",
-                                "/*.jpg"
-                                ).permitAll()
-                                .requestMatchers(this::isStaticResource).permitAll()
+                                "/profile"
+                        ).permitAll()
+                        .requestMatchers("/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/chat/**","/v1/user/chat/**","/v1/profile/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -53,13 +58,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    private boolean isStaticResource(HttpServletRequest request) {
-        String path = request.getServletPath();
-        return path.endsWith(".css") ||
-                path.endsWith(".js") ||
-                path.endsWith(".jpg") ||
-                path.endsWith(".png");
-    }
     @Bean
     public AuthenticationManager authManager(
             AuthenticationConfiguration config) throws Exception {

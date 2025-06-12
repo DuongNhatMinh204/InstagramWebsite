@@ -1,5 +1,6 @@
 package com.nminh.websiteinstagram.service.impl;
 
+import com.nminh.websiteinstagram.Utils.SecurityUtil;
 import com.nminh.websiteinstagram.entity.User;
 import com.nminh.websiteinstagram.enums.ErrorCode;
 import com.nminh.websiteinstagram.exception.AppException;
@@ -9,6 +10,7 @@ import com.nminh.websiteinstagram.model.request.UserRegisterDTO;
 import com.nminh.websiteinstagram.repository.UserRepository;
 import com.nminh.websiteinstagram.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -57,5 +59,11 @@ public class UserServiceImpl implements UserService {
         }
 
         return user;
+    }
+
+    @Override
+    public ResponseEntity<?> getInfo() {
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTS)) ;
+        return ResponseEntity.ok(user);
     }
 }

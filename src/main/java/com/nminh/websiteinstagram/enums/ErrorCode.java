@@ -22,7 +22,9 @@ public enum ErrorCode {
     CANNOT_UNLIKE(1011,"you can not unlike this post" , HttpStatus.BAD_REQUEST) ,
     CANNOT_FOUND_LIKE(1012,"you can not found like this post" , HttpStatus.BAD_REQUEST) ,
     TOKEN_EXPIRED(1013,"token expired" , HttpStatus.BAD_REQUEST) ,
-    NOT_FOUND_USER_ID(1014,"not found user id in token" , HttpStatus.BAD_REQUEST) ;
+    NOT_FOUND_USER_ID(1014,"not found user id in token" , HttpStatus.BAD_REQUEST),
+    FILE_NOT_VALID(1015,"file not valid" , HttpStatus.BAD_REQUEST) ,
+    ;
 
 
     private int code ;
