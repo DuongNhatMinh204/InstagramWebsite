@@ -45,8 +45,14 @@ public class SecurityConfig {
                                 "/v1/auth/**",
                                 "/api/images/upload",
                                 "/login",
+                                "register",
                                 "/home",
-                                "/profile"
+                                "/profile",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/swagger-resources/**",
+                                "/webjars/**"
                         ).permitAll()
                         .requestMatchers("/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/chat/**","/v1/user/chat/**","/v1/profile/**").hasAnyRole("USER", "ADMIN")

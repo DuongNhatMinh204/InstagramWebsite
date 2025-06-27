@@ -31,7 +31,7 @@
     <div class="modal-content">
         <span class="closeDetail">×</span>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-            <img id="chatHeaderAvatar" src="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+            <img id="chatHeaderAvatar" src="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;" alt="">
             <h3 style="margin:0;"><span id="chatWithName"></span></h3>
         </div>
         <div id="chatMessages" style="height: 300px; overflow-y: scroll;"></div>
@@ -63,9 +63,10 @@
             <form id="postForm">
                 <div class="post-header">
                     <img id="currentUserAvatar" src="" class="post-avatar" alt="Avatar">
-                    <textarea id="content" placeholder="What's on your mind?" style="width:100%; resize: none;"></textarea>
+                    <label for="content"></label><textarea id="content" placeholder="What's on your mind?" style="width:100%; resize: none;"></textarea>
                 </div>
                 <input type="file" id="imgFile" accept="image/*">
+                <img id="previewImage" src="" alt="Xem trước ảnh" style="max-width:100%; margin-top: 10px; border-radius: 8px; display: none;" />
                 <button type="submit">Đăng Bài</button>
             </form>
         </div>
@@ -86,6 +87,24 @@
 <script src="/js/chat.js"></script>
 <script src="/js/profile.js"></script>
 <script>
+// hiển thị ảnh trước khi upload
+document.getElementById("imgFile").addEventListener("change", function (event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById("previewImage");
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+            preview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.src = "";
+        preview.style.display = "none";
+    }
+});
+
 // Lấy avatar người dùng hiện tại và gán vào phần đăng bài
 const token = localStorage.getItem("token");
 if (token) {
@@ -133,27 +152,7 @@ function openChatModalWith(nickName, avatarUrl, userId) {
 }
 </script>
 <style>
-.posts-feed {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .post-card, #postsContainer .post {
-            width: 100%;
-            max-width: 650px;
-        }
-        #postsContainer .post {
-            margin: 16px auto;
-        }
-.contacts-list {
-    position: sticky;
-    top: 80px;
-    max-height: 80vh;
-    overflow-y: auto;
-}
-.contact-item:hover {
-    background: #f0f2f5;
-}
+
 </style>
 </body>
 </html>

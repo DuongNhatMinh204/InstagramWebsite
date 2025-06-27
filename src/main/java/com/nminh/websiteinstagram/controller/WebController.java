@@ -15,4 +15,7 @@ public class WebController {
     }
     @GetMapping("/profile")
     public String profilePage() {return "profile";}
+
+    @GetMapping("/register")
+    public String registerPage() {return "register";}
 }

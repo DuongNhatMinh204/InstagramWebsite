@@ -473,3 +473,24 @@ a {
 .closeProfile:hover {
     color: #e60000;
 }
+.posts-feed {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.post-card, #postsContainer .post {
+    width: 100%;
+    max-width: 650px;
+}
+#postsContainer .post {
+    margin: 16px auto;
+}
+.contacts-list {
+    position: sticky;
+    top: 80px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.contact-item:hover {
+    background: #f0f2f5;
+}
