@@ -12,18 +12,18 @@
     <div class="nav-items">
         <span>🏠 Home</span>
         <button id="openModalBtn">💬 Messages</button>
-        <!-- Modal -->
         <div id="chatModal" class="modal">
             <div class="modal-content">
                 <span class="close">×</span>
                 <h3>Đoạn chat</h3>
                 <input type="text" placeholder="Tìm kiếm trên Messenger..." class="search-box">
                 <div class="chat-list" id="chatList">
-                    <!-- Dữ liệu người dùng sẽ được render ở đây -->
                 </div>
             </div>
         </div>
-        <button id="openProfileModal">👤 Profile</button>
+
+        <div id="authNavButton" class="profile-dropdown-container">
+        </div>
     </div>
 </nav>
 <!-- Modal hiển thị chi tiết đoạn chat với 1 người -->
@@ -52,12 +52,12 @@
             <div class="option">❓ Trợ giúp và hỗ trợ</div>
             <div class="option">🌙 Màn hình & trợ năng</div>
             <div class="option">💬 Đóng góp ý kiến</div>
-            <div class="option">🚪 Đăng xuất</div>
+            <div class="option" id="logoutBtn">🚪 Đăng xuất</div>
         </div>
     </div>
 </div>
 
-<div class="main-container" style="display: flex; justify-content: center; align-items: flex-start;">
+<div class="main-container" style="display: flex; justify-content: center; align-items: flex-start; margin-top: 85px; padding: 20px;">
     <div class="posts-feed" style="margin-right: 32px;">
         <div class="post-card">
             <form id="postForm">
@@ -150,6 +150,249 @@ function openChatModalWith(nickName, avatarUrl, userId) {
     if (window.loadChatHistory) window.loadChatHistory(userId, avatarUrl);
     if (window.setCurrentChatUserId) window.setCurrentChatUserId(userId);
 }
+// Thêm đoạn mã này vào cuối thẻ <script> trong home.html
+// Hoặc tốt hơn là đặt nó vào file /js/profile.js
+
+document.addEventListener('DOMContentLoaded', function() {
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+            // Xóa token và userId khỏi Local Storage
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+
+            // Chuyển hướng người dùng về trang đăng nhập
+            window.location.href = '/login'; // Đảm bảo đường dẫn này đúng với trang đăng nhập của bạn
+        });
+    }
+});
+    // Logic kiểm tra đăng nhập và hiển thị nút
+    document.addEventListener('DOMContentLoaded', function() {
+    const authNavButtonContainer = document.getElementById('authNavButton');
+    const token = localStorage.getItem('token');
+
+    if (token) {
+    // Nếu có token, hiển thị nút Profile và dropdown
+    authNavButtonContainer.innerHTML = `
+            <button id="openProfileDropdown">👤 Profile</button>
+            <div id="profileDropdownMenu" class="profile-dropdown-menu">
+                <div class="dropdown-item" id="viewProfileBtn"><i class="bi bi-person-circle"></i> Xem tất cả trang cá nhân</div>
+                <hr />
+                <div class="dropdown-item"><i class="bi bi-gear-fill"></i> Cài đặt & quyền riêng tư</div>
+                <div class="dropdown-item"><i class="bi bi-question-circle-fill"></i> Trợ giúp và hỗ trợ</div>
+                <div class="dropdown-item"><i class="bi bi-moon-fill"></i> Màn hình & trợ năng</div>
+                <div class="dropdown-item"><i class="bi bi-chat-dots-fill"></i> Đóng góp ý kiến</div>
+                <hr />
+                <div class="dropdown-item" id="logoutBtn"><i class="bi bi-box-arrow-right"></i> Đăng xuất</div>
+            </div>
+        `;
+
+    const openProfileDropdownBtn = document.getElementById('openProfileDropdown');
+    const profileDropdownMenu = document.getElementById('profileDropdownMenu');
+    const logoutBtn = document.getElementById('logoutBtn'); // Lấy lại nút logout sau khi render
+
+    // Toggle dropdown khi click nút Profile
+    openProfileDropdownBtn.addEventListener('click', function(event) {
+    event.stopPropagation(); // Ngăn sự kiện click lan ra ngoài
+    profileDropdownMenu.classList.toggle('show');
+});
+
+    // Đóng dropdown khi click bên ngoài
+    document.addEventListener('click', function(event) {
+    if (!authNavButtonContainer.contains(event.target)) {
+    profileDropdownMenu.classList.remove('show');
+}
+});
+
+    // Logic Đăng xuất
+    if (logoutBtn) {
+    logoutBtn.addEventListener('click', function() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    window.location.href = '/login'; // Chuyển hướng về trang đăng nhập
+});
+}
+
+    // Logic "Xem tất cả trang cá nhân" (nếu có trang profile riêng)
+        const viewProfileBtnDropdown = document.getElementById('viewProfileBtn'); // Giữ nguyên ID nếu bạn muốn
+        if (viewProfileBtnDropdown) { // Sử dụng ID phù hợp với dropdown item
+            viewProfileBtnDropdown.addEventListener('click', function() {
+                const currentUserId = localStorage.getItem('userId');
+                if (currentUserId) {
+                    // Chuyển hướng đến trang profile.html và truyền userId qua URL param
+                    window.location.href = `/profile?userId=${currentUserId}`;
+                } else {
+                    alert('Không tìm thấy thông tin người dùng.');
+                }
+                // Nếu profileDropdownMenu được định nghĩa trong scope này, đóng nó
+                if (typeof profileDropdownMenu !== 'undefined') {
+                    profileDropdownMenu.classList.remove('show');
+                }
+            });
+        }
+
+
+    } else {
+    // Nếu không có token, hiển thị nút Login
+    authNavButtonContainer.innerHTML = '<a href="/login" class="nav-item-link">🔓 Login</a>';
+}
+
+    // --- Các script hiện có của bạn (đã được bao bọc trong DOMContentLoaded) ---
+
+    // hiển thị ảnh trước khi upload
+    document.getElementById("imgFile").addEventListener("change", function (event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById("previewImage");
+
+    if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+    preview.src = e.target.result;
+    preview.style.display = "block";
+};
+    reader.readAsDataURL(file);
+} else {
+    preview.src = "";
+    preview.style.display = "none";
+}
+});
+
+    // Lấy avatar người dùng hiện tại và gán vào phần đăng bài (chỉ khi có token)
+    if (token) {
+    fetch("/v1/auth/info", {
+    headers: { "Authorization": "Bearer " + token }
+})
+    .then(res => res.json())
+    .then(user => {
+    document.getElementById("currentUserAvatar").src = user.avatarUrl || "/images/logo.jpg";
+})
+    .catch(error => {
+    console.error("Error fetching user info:", error);
+    // Có thể xử lý lỗi ở đây, ví dụ: chuyển hướng về login nếu token không hợp lệ
+    // localStorage.removeItem('token');
+    // localStorage.removeItem('userId');
+    // window.location.href = '/login';
+});
+} else {
+    // Nếu không có token, ẩn hoặc thay thế phần đăng bài nếu cần
+    const postForm = document.getElementById("postForm");
+    if (postForm) {
+     postForm.style.display = 'none'; // Ẩn form đăng bài
+    // Hoặc chuyển hướng nếu người dùng chưa đăng nhập mà vào trang home
+    // window.location.href = '/login';
+}
+    const currentUserAvatar = document.getElementById("currentUserAvatar");
+    if (currentUserAvatar) {
+    currentUserAvatar.src = "/images/logo.jpg"; // Set default avatar
+}
+}
+
+
+    function renderFollowings() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+    const list = document.getElementById("followingsList");
+    if (list) list.innerHTML = '<div style="color:#888;">Bạn cần đăng nhập để xem người liên hệ.</div>';
+    return;
+}
+    fetch("/v1/profile/followings", {
+    headers: { "Authorization": "Bearer " + token }
+})
+    .then(res => {
+    if (!res.ok) {
+    if (res.status === 401 || res.status === 403) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    alert('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.');
+    window.location.href = '/login';
+}
+    throw new Error('Failed to fetch followings');
+}
+    return res.json();
+})
+    .then(data => {
+    const list = document.getElementById("followingsList");
+    const users = data.data && data.data.data ? data.data.data : [];
+    if (users.length === 0) {
+    list.innerHTML = '<div style="color:#888;">Bạn chưa follow ai.</div>';
+    return;
+}
+    list.innerHTML = users.map(user => `
+                <div class="contact-item" style="display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer;border-radius:6px;transition:background 0.2s;" onclick="openChatModalWith('${user.nickName}','${user.avatarUrl || '/images/logo.jpg'}','${user.id}')">
+                    <img src="${user.avatarUrl || '/images/logo.jpg'}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">
+                    <span style="font-weight:500;">${user.nickName}</span>
+                </div>
+            `).join('');
+})
+    .catch(error => {
+    console.error("Error rendering followings:", error);
+    const list = document.getElementById("followingsList");
+    if (list) list.innerHTML = '<div style="color:#888;">Không thể tải danh sách người liên hệ.</div>';
+});
+}
+    renderFollowings();
+
+    // Hàm mở modal chat với người được chọn
+    function openChatModalWith(nickName, avatarUrl, userId) {
+    document.getElementById('chatModal').style.display = 'none';
+    document.getElementById('chatDetailModal').style.display = 'flex'; // Dùng flex để căn giữa modal
+    document.getElementById('chatWithName').innerText = nickName;
+    document.getElementById('chatHeaderAvatar').src = avatarUrl || '/images/logo.jpg';
+    if (window.loadChatHistory) window.loadChatHistory(userId, avatarUrl);
+    if (window.setCurrentChatUserId) window.setCurrentChatUserId(userId);
+}
+    // Gán hàm vào window để có thể gọi từ onclick trong HTML
+    window.openChatModalWith = openChatModalWith;
+
+    // Logic đóng modal chat detail
+    const chatDetailModal = document.getElementById('chatDetailModal');
+    const closeDetailSpan = document.querySelector('#chatDetailModal .closeDetail');
+    if (closeDetailSpan) {
+    closeDetailSpan.onclick = function() {
+    chatDetailModal.style.display = 'none';
+}
+}
+    // `window.onclick` đã được thêm bên ngoài `DOMContentLoaded` trước đó, cần điều chỉnh để không xung đột.
+    // Nếu bạn muốn đóng modal khi click bên ngoài, chỉ nên có một `window.onclick` duy nhất.
+    // Hiện tại, nó đã được chuyển vào trong `DOMContentLoaded` và tách riêng cho mỗi modal.
+
+    // Logic mở/đóng modal Messages
+    const openModalBtn = document.getElementById('openModalBtn');
+    const chatModal = document.getElementById('chatModal');
+    const closeChatModalSpan = document.querySelector('#chatModal .close');
+
+    if(openModalBtn) {
+    openModalBtn.onclick = function() {
+    chatModal.style.display = 'flex'; // Dùng flex để căn giữa modal
+}
+}
+    if(closeChatModalSpan) {
+    closeChatModalSpan.onclick = function() {
+    chatModal.style.display = 'none';
+}
+}
+    // `window.onclick` cho chatModal
+    window.onclick = function(event) {
+    if (event.target === chatModal) {
+    chatModal.style.display = 'none';
+}
+    // Thêm điều kiện cho chatDetailModal vào đây nếu muốn một `window.onclick` duy nhất
+    if (event.target === chatDetailModal) {
+    chatDetailModal.style.display = 'none';
+}
+}
+
+    // Logic đóng modal Profile (không cần nữa vì đã thay bằng dropdown)
+    // const profileModal = document.getElementById('profileModal');
+    // const closeProfileSpan = document.querySelector('#profileModal .closeProfile');
+    // if(closeProfileSpan) {
+    //     closeProfileSpan.onclick = function() {
+    //         profileModal.style.display = 'none';
+    //     }
+    // }
+});
+
 </script>
 <style>
 

@@ -19,7 +19,7 @@ spring:
 
 jwt:
   secret: xIllBhvQTHZLRu6wlhLcZpIDqPNkjMAeZNXkM9/crVIPmQKx3PmznB3MR/X2usri
-  expiration: 86400000
+
 
 logging:
   file:

@@ -458,7 +458,83 @@ a {
 .profile-options .option:hover {
     background-color: #f0f0f0;
 }
+.profile-dropdown-container {
+    position: relative; /* Quan trọng để dropdown nằm đúng vị trí */
+}
 
+.profile-dropdown-menu {
+    display: none; /* Mặc định ẩn */
+    position: absolute;
+    top: calc(100% + 10px); /* Khoảng cách từ nút */
+    right: 0; /* Canh lề phải với nút Profile */
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    min-width: 250px; /* Chiều rộng tối thiểu của box */
+    z-index: 1001; /* Đảm bảo nằm trên các nội dung khác */
+    padding: 10px 0;
+    opacity: 0; /* Dùng cho hiệu ứng fade */
+    transform: translateY(-10px); /* Dùng cho hiệu ứng trượt */
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.profile-dropdown-menu.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.profile-dropdown-menu hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 8px 0;
+}
+
+.profile-dropdown-menu .dropdown-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #333;
+    font-size: 1em;
+    display: flex; /* Để căn chỉnh icon và text */
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.profile-dropdown-menu .dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+.profile-dropdown-menu .dropdown-item i {
+    font-size: 1.2em;
+    color: #555;
+}
+
+/* Thêm hoặc điều chỉnh CSS cho .nav-items a để link Login có style tương tự nút/span */
+.nav-items a {
+    background: none;
+    border: none;
+    font-size: 1.1em;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.2s ease;
+    text-decoration: none; /* Bỏ gạch chân cho link */
+}
+
+.nav-items a:hover {
+    color: #000;
+}
+
+/* ... (Các CSS khác của bạn) ... */
+
+/* Điều chỉnh margin-top của main-container và contacts-list để không bị đè bởi nav-bar */
+.main-container {
+    margin-top: 85px; /* Đảm bảo nội dung không bị che bởi nav-bar cố định */
+    padding: 20px; /* Thêm padding để nội dung không bị sát lề */
+}
+.contacts-list {
+    margin-top: 220px; /* Điều chỉnh để căn chỉnh với phần post */
+}
 .closeProfile {
     position: absolute;
     top: 10px;

@@ -2,178 +2,706 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Trang Cá Nhân</title>
+    <title>Trang cá nhân - Instagram Clone</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
+        /* CSS chung từ home.css hoặc các style bạn muốn chia sẻ */
         body {
-            font-family: Arial, sans-serif;
-            background: #f0f2f5;
-            margin: 0;
-            padding: 0;
+            background-color: #f0f2f5; /* Màu nền nhẹ nhàng */
         }
 
-        header {
-            background: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            padding: 10px 0;
-            text-align: center;
-            position: sticky;
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
             top: 0;
-            z-index: 10;
+            left: 0;
+            z-index: 1000;
         }
 
-        /* Xóa hoặc chỉnh sửa .cover để không che avatar */
-        .cover {
+        .nav-bar h1 {
+            font-size: 1.8em;
+            color: #333;
+            margin: 0;
+        }
+
+        .nav-items {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-items span, .nav-items button, .nav-items a {
+            background: none;
+            border: none;
+            font-size: 1.1em;
+            cursor: pointer;
+            color: #555;
+            transition: color 0.2s ease;
+            text-decoration: none;
+        }
+
+        .nav-items span:hover, .nav-items button:hover, .nav-items a:hover {
+            color: #000;
+        }
+
+        /* Profile Dropdown Styles */
+        .profile-dropdown-container {
+            position: relative;
+        }
+
+        .profile-dropdown-menu {
             display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            min-width: 250px;
+            z-index: 1001;
+            padding: 10px 0;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .profile-dropdown-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .profile-dropdown-menu hr {
+            border: 0;
+            border-top: 1px solid #eee;
+            margin: 8px 0;
+        }
+
+        .profile-dropdown-menu .dropdown-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            color: #333;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.2s ease;
+        }
+
+        .profile-dropdown-menu .dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .profile-dropdown-menu .dropdown-item i {
+            font-size: 1.2em;
+            color: #555;
+        }
+
+        /* CSS dành riêng cho trang profile */
+        .profile-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            max-width: 900px;
+            margin: 100px auto 30px auto; /* Điều chỉnh margin-top để không bị navbar che */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-header-section {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 30px;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap; /* Cho phép xuống dòng trên màn hình nhỏ */
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .profile-info {
-            text-align: center;
-            margin-top: -60px;
-        }
-
-        .profile-info img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 4px solid white;
-            background-color: white;
-        }
-
-        .nickname {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        .info-bar {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .post {
-            background: white;
-            border-radius: 10px;
-            margin: 10px auto;
-            padding: 10px;
-            width: 90%;
+            text-align: left;
+            flex-grow: 1;
             max-width: 500px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .post img {
-            max-width: 100%;
-            border-radius: 8px;
+        .profile-info h2 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 700;
         }
 
-        .stats {
+        .profile-stats {
+            display: flex;
+            gap: 25px;
+            margin-top: 15px;
+            font-size: 1.1em;
             color: #555;
-            margin-top: 5px;
         }
 
-        .post-header {
+        .profile-stats span {
+            font-weight: 600;
+            color: #222;
+        }
+
+        .profile-description {
+            margin-top: 15px;
+            color: #666;
+            line-height: 1.5;
+            max-width: 500px;
+        }
+
+        .edit-profile-btn {
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 600;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .edit-profile-btn:hover {
+            background-color: #007bb5;
+            transform: translateY(-1px);
+        }
+
+        .profile-posts-grid {
+            margin-top: 40px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .post-item {
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .post-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+
+        .post-item img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .post-content {
+            padding: 15px;
+        }
+
+        .post-content p {
+            font-size: 1em;
+            color: #444;
+            margin-bottom: 10px;
+            max-height: 4.5em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9em;
+            color: #777;
+        }
+
+        .post-stats span {
             display: flex;
             align-items: center;
-            margin-bottom: 8px;
+            gap: 5px;
+        }
+        .post-stats i {
+            color: #999;
         }
 
-        .post-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            object-fit: cover;
-            background: #eee;
+        /* Modal cho chỉnh sửa thông tin cá nhân */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
         }
 
-        .post-nickname {
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            position: relative;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
             font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+
+        .close:hover, .close:focus {
+            color: #000;
+            text-decoration: none;
+        }
+
+        .edit-profile-modal .modal-content {
+            max-width: 550px;
+            padding: 30px;
+        }
+
+        .edit-profile-modal h3 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8em;
             color: #333;
         }
 
-        .comments {
-            margin-top: 10px;
-            background: #f7f7f7;
-            border-radius: 6px;
-            padding: 8px;
+        .edit-profile-modal .form-label {
+            font-weight: 600;
+            margin-bottom: 5px;
         }
 
-        .comment {
-            margin-bottom: 4px;
-            font-size: 14px;
+        .edit-profile-modal .form-control {
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .edit-profile-modal .btn-primary {
+            background-color: #0095f6;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            margin-top: 20px;
+        }
+
+        .edit-profile-modal .btn-primary:hover {
+            background-color: #007bb5;
+        }
+
+        .edit-profile-modal .avatar-upload-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .edit-profile-modal .current-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 2px solid #eee;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+
+        .edit-profile-modal .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .edit-profile-modal .file-input-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .edit-profile-modal .file-input-wrapper .btn {
+            background-color: #f0f2f5;
+            color: #333;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+        }
+        .edit-profile-modal .file-input-wrapper .btn:hover {
+            background-color: #e0e2e5;
         }
     </style>
 </head>
 <body>
-<header>
-    <a href="/home" style="display: inline-block;">
-        <img src="/images/logo.jpg" alt="Instagram" style="height: 40px; vertical-align: middle;" onerror="this.onerror=null;this.src='https://via.placeholder.com/120x40?text=Logo';">
-    </a>
-</header>
+<nav class="nav-bar">
+    <h1>Instagram</h1>
+    <div class="nav-items">
+        <span><a href="/home.html" style="text-decoration: none; color: inherit;">🏠 Home</a></span>
+        <button id="openModalBtn" style="display: none;">💬 Messages</button>
+        <div id="authNavButton" class="profile-dropdown-container">
+        </div>
+    </div>
+</nav>
 
-<div class="cover"></div>
+<div class="profile-container">
+    <div class="profile-header-section">
+        <img id="profileAvatar" src="/images/logo.jpg" alt="Profile Avatar" class="profile-avatar">
+        <div class="profile-info">
+            <h2 id="profileNickname">Loading...</h2>
+            <div class="profile-stats">
+                <p><span id="postCount">0</span> bài viết</p>
+                <p><span id="followerCount">0</span> người theo dõi</p>
+                <p><span id="followingCount">0</span> đang theo dõi</p>
+            </div>
+            <p id="profileDescription" class="profile-description">...</p>
+            <button id="editProfileBtn" class="edit-profile-btn">Chỉnh sửa thông tin</button>
+        </div>
+    </div>
 
-<div class="profile-info">
-    <img id="avatar" src="" alt="Avatar">
-    <div class="nickname" id="nickname">Đang tải...</div>
+    <hr style="width: 100%; border-top: 1px solid #eee; margin: 30px 0;">
+
+    <h3>Bài viết của tôi</h3>
+    <div id="userPostsGrid" class="profile-posts-grid">
+        <div style="grid-column: 1 / -1; text-align: center; color: #888;">Đang tải bài viết...</div>
+    </div>
 </div>
 
-<div class="info-bar">
-    <button onclick="alert('Chức năng đang phát triển')">Chỉnh sửa trang cá nhân</button>
-</div>
+<div id="editProfileModal" class="modal edit-profile-modal">
+    <div class="modal-content">
+        <span class="close" id="closeEditProfileModalBtn">×</span>
+        <h3>Chỉnh sửa thông tin cá nhân</h3>
+        <form id="editProfileForm">
+            <div class="avatar-upload-section">
+                <img id="editProfileAvatarPreview" src="/images/logo.jpg" alt="Current Avatar" class="current-avatar">
+                <div class="file-input-wrapper">
+                    <input type="file" id="newAvatarFile" accept="image/*">
+                    <button type="button" class="btn btn-outline-secondary"><i class="bi bi-camera"></i> Đổi ảnh đại diện</button>
+                </div>
+            </div>
 
-<div id="posts"></div>
+            <div class="mb-3">
+                <label for="editNickname" class="form-label">Tên người dùng</label>
+                <input type="text" class="form-control" id="editNickname" name="nickname" required>
+            </div>
+            <div class="mb-3">
+                <label for="editDescription" class="form-label">Mô tả bản thân</label>
+                <textarea class="form-control" id="editDescription" name="description" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+        </form>
+    </div>
+</div>
 
 <script>
-    const token = localStorage.getItem("token");
-    if (!token) {
-        alert("Vui lòng đăng nhập.");
-        window.location.href = "/login";
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Khởi tạo userId và token, xử lý trường hợp không đăng nhập ---
+        let userId = localStorage.getItem('userId');
+        let token = localStorage.getItem('token');
 
-    fetch("/v1/auth/info", {
-        headers: { "Authorization": "Bearer " + token }
-    })
-        .then(res => res.json())
-        .then(user => {
-            document.getElementById("avatar").src = user.avatarUrl || "https://via.placeholder.com/120";
-            document.getElementById("nickname").innerText = user.nickName || "Không tên";
-        })
-        .catch(() => alert("Không thể tải thông tin người dùng."));
+        // Hàm chuyển hướng về trang đăng nhập nếu token/userId không hợp lệ
+        function redirectToLogin() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            alert('Phiên làm việc đã hết hạn hoặc bạn không có quyền truy cập. Vui lòng đăng nhập lại.');
+            window.location.href = '/login.html'; // Đảm bảo đường dẫn này đúng
+        }
 
-    fetch("/v1/profile/post", {
-        headers: { "Authorization": "Bearer " + token }
-    })
-        .then(res => res.json())
-        .then(response => {
-            const posts = response.data;
-            const postsContainer = document.getElementById("posts");
-            posts.forEach(post => {
-                const div = document.createElement("div");
-                div.className = "post";
-                // Hiển thị avatar và nickname người đăng (dùng post.nickname và post.url_avatar)
-                div.innerHTML = `
-            <div class="post-header">
-              <img src="${post.url_avatar || 'https://via.placeholder.com/40'}" alt="Avatar" class="post-avatar">
-              <div class="post-nickname">${post.nickname || 'Không tên'}</div>
-            </div>
-            <img src="${post.imageUrl}" alt="Post Image">
-            <p><strong>${post.content}</strong></p>
-            <p class="stats">❤️ ${post.totalLikes} &nbsp;&nbsp; 💬 ${post.totalComments}</p>
-            <div class="comments">
-              ${(post.comments && post.comments.length > 0) ? post.comments.map(comment => `
-                <div class="comment">
-                  <strong>${comment.nickName}:</strong> ${comment.content}
+        if (!userId || !token) {
+            redirectToLogin();
+            return; // Ngừng thực thi nếu không có thông tin đăng nhập
+        }
+
+        // Lấy userId từ URL (ưu tiên để xem profile người khác) hoặc từ localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        const profileUserId = urlParams.get('userId') || userId;
+
+        if (!profileUserId) {
+            alert('Không tìm thấy ID người dùng để hiển thị.');
+            // Có thể chuyển hướng về home hoặc login nếu không tìm thấy user ID
+            window.location.href = '/home.html';
+            return;
+        }
+
+        // --- Logic cho nút Profile/Login trên Navbar ---
+        const authNavButtonContainer = document.getElementById('authNavButton');
+        if (token) {
+            authNavButtonContainer.innerHTML = `
+                <button id="openProfileDropdown">👤 Profile</button>
+                <div id="profileDropdownMenu" class="profile-dropdown-menu">
+                    <div class="dropdown-item" id="viewProfileBtnDropdown"><i class="bi bi-person-circle"></i> Xem tất cả trang cá nhân</div>
+                    <hr />
+                    <div class="dropdown-item"><i class="bi bi-gear-fill"></i> Cài đặt & quyền riêng tư</div>
+                    <div class="dropdown-item"><i class="bi bi-question-circle-fill"></i> Trợ giúp và hỗ trợ</div>
+                    <div class="dropdown-item"><i class="bi bi-moon-fill"></i> Màn hình & trợ năng</div>
+                    <div class="dropdown-item"><i class="bi bi-chat-dots-fill"></i> Đóng góp ý kiến</div>
+                    <hr />
+                    <div class="dropdown-item" id="logoutBtn"><i class="bi bi-box-arrow-right"></i> Đăng xuất</div>
                 </div>
-              `).join('') : '<div class="comment">Chưa có bình luận</div>'}
-            </div>
-            <div class="likes" style="margin-top:8px; color:#888; font-size:13px;">
-              ${(post.likes && post.likes.length > 0) ? 'Đã thích: ' + post.likes.map(like => like.user.nickName).join(', ') : ''}
-            </div>
-          `;
-                postsContainer.appendChild(div);
+            `;
+
+            const openProfileDropdownBtn = document.getElementById('openProfileDropdown');
+            const profileDropdownMenu = document.getElementById('profileDropdownMenu');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const viewProfileBtnDropdown = document.getElementById('viewProfileBtnDropdown');
+
+            openProfileDropdownBtn.addEventListener('click', function(event) {
+                event.stopPropagation();
+                profileDropdownMenu.classList.toggle('show');
             });
-        })
-        .catch(() => alert("Không thể tải bài viết."));
+
+            document.addEventListener('click', function(event) {
+                if (!authNavButtonContainer.contains(event.target)) {
+                    profileDropdownMenu.classList.remove('show');
+                }
+            });
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    redirectToLogin(); // Sử dụng hàm redirectToLogin
+                });
+            }
+
+            if (viewProfileBtnDropdown) {
+                viewProfileBtnDropdown.addEventListener('click', function() {
+                    // Khi click "Xem tất cả trang cá nhân", luôn trỏ về profile của chính mình
+                    window.location.href = `/profile.html?userId=${userId}`;
+                    profileDropdownMenu.classList.remove('show');
+                });
+            }
+
+        } else {
+            authNavButtonContainer.innerHTML = '<a href="/login.html" class="nav-item-link">🔓 Login</a>'; // Đảm bảo đường dẫn đúng
+        }
+        // --- Kết thúc Logic cho nút Profile/Login trên Navbar ---
+
+
+        // Hàm tải thông tin profile
+        function loadProfileData() {
+            // Lấy token ngay trước khi gọi API để đảm bảo nó vẫn còn
+            const currentToken = localStorage.getItem('token');
+            if (!currentToken) {
+                redirectToLogin();
+                return;
+            }
+
+            fetch(`/v1/profile/${profileUserId}`, {
+                headers: { "Authorization": `Bearer ${currentToken}` }
+            })
+                .then(res => {
+                    if (res.status === 401 || res.status === 403) {
+                        redirectToLogin(); // Xử lý 401/403: chuyển hướng
+                        return; // Ngừng xử lý tiếp
+                    }
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    const user = data.data;
+                    document.getElementById('profileAvatar').src = user.avatarUrl || '/images/logo.jpg';
+                    document.getElementById('profileNickname').innerText = user.nickName;
+                    document.getElementById('profileDescription').innerText = user.description || 'Chưa có mô tả.';
+                    document.getElementById('postCount').innerText = user.postCount || 0;
+                    document.getElementById('followerCount').innerText = user.followerCount || 0;
+                    document.getElementById('followingCount').innerText = user.followingCount || 0;
+
+                    // Hiển thị nút chỉnh sửa nếu đây là profile của chính người dùng
+                    if (profileUserId === userId) {
+                        document.getElementById('editProfileBtn').style.display = 'block';
+                    } else {
+                        document.getElementById('editProfileBtn').style.display = 'none';
+                        // Thêm logic nút Follow/Unfollow ở đây nếu cần cho profile người khác
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading profile data:', error);
+                    alert('Không thể tải thông tin trang cá nhân.');
+                });
+        }
+
+        // Hàm tải bài viết của người dùng
+        function loadUserPosts() {
+            const currentToken = localStorage.getItem('token');
+            if (!currentToken) {
+                redirectToLogin();
+                return;
+            }
+
+            fetch(`/v1/post/by-user/${profileUserId}`, {
+                headers: { "Authorization": `Bearer ${currentToken}` }
+            })
+                .then(res => {
+                    if (res.status === 401 || res.status === 403) {
+                        redirectToLogin(); // Xử lý 401/403: chuyển hướng
+                        return;
+                    }
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    const postsContainer = document.getElementById('userPostsGrid');
+                    const posts = data.data && data.data.data ? data.data.data : [];
+                    if (posts.length === 0) {
+                        postsContainer.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #888; padding: 20px;">Chưa có bài viết nào.</div>';
+                        return;
+                    }
+                    postsContainer.innerHTML = posts.map(post => `
+                    <div class="post-item">
+                        <img src="${post.imageUrl}" alt="Post Image">
+                        <div class="post-content">
+                            <p>${post.content}</p>
+                            <div class="post-stats">
+                                <span><i class="bi bi-heart-fill"></i> ${post.likeCount || 0}</span>
+                                <span><i class="bi bi-chat-fill"></i> ${post.commentCount || 0}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                })
+                .catch(error => {
+                    console.error('Error loading user posts:', error);
+                    document.getElementById('userPostsGrid').innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #888; padding: 20px;">Không thể tải bài viết.</div>';
+                });
+        }
+
+        // Gọi các hàm tải dữ liệu khi trang tải xong
+        loadProfileData();
+        loadUserPosts();
+
+        // --- Logic Modal chỉnh sửa thông tin ---
+        const editProfileBtn = document.getElementById('editProfileBtn');
+        const editProfileModal = document.getElementById('editProfileModal');
+        const closeEditProfileModalBtn = document.getElementById('closeEditProfileModalBtn');
+        const editProfileForm = document.getElementById('editProfileForm');
+        const editNicknameInput = document.getElementById('editNickname');
+        const editDescriptionTextarea = document.getElementById('editDescription');
+        const newAvatarFileInput = document.getElementById('newAvatarFile');
+        const editProfileAvatarPreview = document.getElementById('editProfileAvatarPreview');
+
+        if (editProfileBtn) {
+            editProfileBtn.addEventListener('click', function() {
+                editNicknameInput.value = document.getElementById('profileNickname').innerText;
+                editDescriptionTextarea.value = document.getElementById('profileDescription').innerText === 'Chưa có mô tả.' ? '' : document.getElementById('profileDescription').innerText;
+                editProfileAvatarPreview.src = document.getElementById('profileAvatar').src;
+                editProfileModal.style.display = 'flex';
+            });
+        }
+
+        if (closeEditProfileModalBtn) {
+            closeEditProfileModalBtn.addEventListener('click', function() {
+                editProfileModal.style.display = 'none';
+            });
+        }
+
+        if (newAvatarFileInput) {
+            newAvatarFileInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        editProfileAvatarPreview.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        if (editProfileForm) {
+            editProfileForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const formData = new FormData();
+                formData.append('nickName', editNicknameInput.value);
+                formData.append('description', editDescriptionTextarea.value);
+                if (newAvatarFileInput.files.length > 0) {
+                    formData.append('avatarFile', newAvatarFileInput.files[0]);
+                }
+
+                const currentToken = localStorage.getItem('token');
+                if (!currentToken) {
+                    redirectToLogin();
+                    return;
+                }
+
+                fetch('/v1/profile', {
+                    method: 'PUT',
+                    headers: { "Authorization": `Bearer ${currentToken}` }, // Sử dụng currentToken
+                    body: formData
+                })
+                    .then(res => {
+                        if (res.status === 401 || res.status === 403) {
+                            redirectToLogin();
+                            return;
+                        }
+                        if (!res.ok) {
+                            return res.json().then(errorData => {
+                                throw new Error(errorData.message || 'Cập nhật profile thất bại');
+                            });
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        alert('Cập nhật thông tin thành công!');
+                        editProfileModal.style.display = 'none';
+                        loadProfileData(); // Tải lại dữ liệu profile để hiển thị thay đổi
+                    })
+                    .catch(error => {
+                        console.error('Error updating profile:', error);
+                        alert('Cập nhật thông tin thất bại: ' + error.message);
+                    });
+            });
+        }
+
+        // --- Xử lý đóng modal khi click ra ngoài ---
+        window.addEventListener('click', function(event) {
+            if (event.target === editProfileModal) {
+                editProfileModal.style.display = 'none';
+            }
+        });
+    });
 </script>
 </body>
 </html>
