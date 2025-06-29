@@ -4,9 +4,9 @@ spring:
   application:
     name: social
   datasource:
-    url: jdbc:mysql://localhost:3306/social
+    url: jdbc:mysql://localhost:3306/instagram
     username: thangdv
-    password: 12345679
+    password: 123456
   jpa:
     hibernate:
       ddl-auto: update
@@ -19,7 +19,6 @@ spring:
 
 jwt:
   secret: xIllBhvQTHZLRu6wlhLcZpIDqPNkjMAeZNXkM9/crVIPmQKx3PmznB3MR/X2usri
-
 
 logging:
   file:

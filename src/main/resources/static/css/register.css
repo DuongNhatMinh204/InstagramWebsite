@@ -9,7 +9,7 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    overflow: hidden; /* Ngăn cuộn trang */
+    overflow: auto; /* Ngăn cuộn trang */
 }
 
 /* Đồng thời, hãy điều chỉnh màu viền focus và gradient của nút đăng ký
