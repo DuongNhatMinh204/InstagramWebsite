@@ -1,595 +1,169 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang Cá Nhân</title>
-    <style>
-        :root {
-            --primary-color: #1877f2;
-            --secondary-color: #e4e6eb;
-            --background-color: #65676b;
-            --card-color: #ffffff;
-            --text-primary: #050505;
-            --text-secondary: #65676b;
-        }
-
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: var(--background-color);
-            margin: 0;
-            padding: 0;
-            color: var(--text-primary);
-        }
-
-        header {
-            background: var(--card-color);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            padding: 8px 16px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-
-        .search-bar {
-            background: var(--secondary-color);
-            border-radius: 50px;
-            padding: 8px 12px;
-            width: 40%;
-            max-width: 500px;
-        }
-
-        .user-controls {
-            display: flex;
-            gap: 10px;
-        }
-
-        .profile-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
-
-        .cover-photo {
-            height: 350px;
-            background: linear-gradient(135deg, #4267B2, #898F9C);
-            position: relative;
-            border-radius: 0 0 8px 8px;
-            overflow: hidden;
-        }
-
-        .cover-photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .profile-header {
-            display: flex;
-            flex-direction: column;
-            background: var(--card-color);
-            border-radius: 8px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            margin-top: -80px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .profile-info {
-            display: flex;
-            padding: 16px;
-        }
-
-        .profile-avatar {
-            width: 168px;
-            height: 168px;
-            border-radius: 50%;
-            border: 4px solid var(--card-color);
-            margin-top: -80px;
-            background: var(--secondary-color);
-            object-fit: cover;
-        }
-
-        .profile-details {
-            flex: 1;
-            padding: 16px;
-            margin-left: 24px;
-        }
-
-        .profile-name {
-            font-size: 32px;
-            font-weight: bold;
-            margin: 8px 0;
-        }
-
-        .profile-stats {
-            display: flex;
-            gap: 20px;
-            margin: 12px 0;
-            color: var(--text-secondary);
-        }
-
-        .profile-nav {
-            display: flex;
-            border-top: 1px solid var(--secondary-color);
-        }
-
-        .nav-item {
-            padding: 16px 24px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-align: center;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .nav-item.active {
-            color: var(--primary-color);
-        }
-
-        .nav-item.active:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--primary-color);
-            border-radius: 3px 3px 0 0;
-        }
-
-        .main-content {
-            display: flex;
-            gap: 16px;
-            margin-top: 16px;
-        }
-
-        .left-sidebar, .right-sidebar {
-            flex: 0 0 300px;
-        }
-
-        .center-content {
-            flex: 1;
-        }
-
-        .card {
-            background: var(--card-color);
-            border-radius: 8px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .card-header {
-            font-weight: bold;
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-
-        .intro-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .intro-icon {
-            margin-right: 12px;
-            color: var(--text-secondary);
-        }
-
-        .friend-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-
-        .friend-item {
-            text-align: center;
-        }
-
-        .friend-avatar {
-            width: 100%;
-            aspect-ratio: 1;
-            object-fit: cover;
-            border-radius: 8px;
-            background: var(--secondary-color);
-        }
-
-        .friend-name {
-            font-size: 12px;
-            margin-top: 4px;
-            color: var(--text-primary);
-        }
-
-        .post {
-            margin-bottom: 16px;
-        }
-
-        .post-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .post-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            object-fit: cover;
-            background: var(--secondary-color);
-        }
-
-        .post-user {
-            flex: 1;
-        }
-
-        .post-name {
-            font-weight: 600;
-        }
-
-        .post-time {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .post-content {
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
-
-        .post-image {
-            width: 100%;
-            max-height: 500px;
-            object-fit: contain;
-            border-radius: 8px;
-            background: var(--secondary-color);
-        }
-
-        .post-stats {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--secondary-color);
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        .post-actions {
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 0;
-        }
-
-        .post-action {
-            display: flex;
-            align-items: center;
-            padding: 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-
-        .post-action:hover {
-            background: var(--secondary-color);
-        }
-
-        .post-action i {
-            margin-right: 8px;
-            font-size: 18px;
-        }
-
-        .create-post {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .post-input {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .post-input-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            object-fit: cover;
-            background: var(--secondary-color);
-        }
-
-        .post-input-field {
-            flex: 1;
-            background: var(--secondary-color);
-            border: none;
-            border-radius: 20px;
-            padding: 10px 16px;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .post-options {
-            display: flex;
-            justify-content: space-between;
-            border-top: 1px solid var(--secondary-color);
-            padding-top: 12px;
-        }
-
-        .post-option {
-            display: flex;
-            align-items: center;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .post-option:hover {
-            background: var(--secondary-color);
-        }
-
-        .post-option i {
-            margin-right: 8px;
-            color: var(--primary-color);
-        }
-
-        @media (max-width: 900px) {
-            .left-sidebar, .right-sidebar {
-                display: none;
-            }
-        }
-    </style>
+    <meta charset="UTF-8" />
+    <title>Trang Cá Nhân - Instagram Clone</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body>
-<header>
-    <a href="/home" class="logo">facebook</a>
-    <div class="search-bar">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Tìm kiếm trên Facebook" style="border: none; background: transparent; width: 90%; margin-left: 8px; outline: none;">
-    </div>
-    <div class="user-controls">
-        <i class="fas fa-home" style="font-size: 24px; color: var(--primary-color);"></i>
-        <i class="fas fa-user-friends" style="font-size: 24px;"></i>
-        <i class="fas fa-comment" style="font-size: 24px;"></i>
-        <i class="fas fa-bell" style="font-size: 24px;"></i>
-    </div>
-</header>
-
-<div class="profile-container">
-    <div class="cover-photo">
-<!--        <img id="cover-photo-img" src="https://via.placeholder.com/1200x350" alt="Cover Photo">-->
-    </div>
-
-    <div class="profile-header">
-        <div class="profile-info">
-            <img id="avatar" class="profile-avatar" src="" alt="Avatar">
-            <div class="profile-details">
-                <div class="profile-name" id="nickname">Đang tải...</div>
-<!--                <div class="profile-stats">-->
-<!--                    <div><i class="fas fa-user-friends"></i> 1.2K bạn bè</div>-->
-<!--                    <div><i class="fas fa-map-marker-alt"></i> Hà Nội, Việt Nam</div>-->
-<!--                </div>-->
-                <div>
-                    <button style="background: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer;">Thêm vào tin</button>
-                    <button style="background: var(--secondary-color); color: var(--text-primary); border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-left: 8px;">Chỉnh sửa trang cá nhân</button>
-                    <button style="background: var(--secondary-color); color: var(--text-primary); border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-left: 8px;"><i class="fas fa-ellipsis-h"></i></button>
+<body class="bg-gray-200 text-gray-800">
+<nav class="flex justify-between items-center bg-white shadow-md py-2 px-4 fixed top-0 left-0 right-0 z-50">
+    <h1 class="text-2xl font-bold text-blue-600">Instagram</h1>
+    <div class="flex items-center space-x-4">
+        <span class="text-lg">🏠 Home</span>
+        <button id="openModalBtn" class="text-lg">💬 Messages</button>
+        <div id="chatModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white p-6 rounded-lg shadow-xl w-96">
+                <span class="float-right text-2xl cursor-pointer" onclick="document.getElementById('chatModal').style.display='none'">×</span>
+                <h3 class="text-xl font-semibold mb-4">Đoạn chat</h3>
+                <input type="text" placeholder="Tìm kiếm trên Messenger..." class="w-full p-2 border border-gray-300 rounded-md mb-4">
+                <div class="h-64 overflow-y-auto" id="chatList">
                 </div>
             </div>
         </div>
-        <div class="profile-nav">
-            <div class="nav-item active">Bài viết</div>
-            <div class="nav-item">Giới thiệu</div>
-            <div class="nav-item">Bạn bè</div>
-            <div class="nav-item">Ảnh</div>
-            <div class="nav-item">Video</div>
-            <div class="nav-item">Xem thêm</div>
+
+        <div id="authNavButton" class="relative">
+        </div>
+    </div>
+</nav>
+
+<div id="chatDetailModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-96">
+        <span class="float-right text-2xl cursor-pointer" onclick="document.getElementById('chatDetailModal').style.display='none'">×</span>
+        <div class="flex items-center gap-2 mb-2">
+            <img id="chatHeaderAvatar" src="" class="w-9 h-9 rounded-full object-cover" alt="">
+            <h3 class="text-lg font-semibold"><span id="chatWithName"></span></h3>
+        </div>
+        <div id="chatMessages" class="h-80 overflow-y-scroll border border-gray-300 p-2 rounded-md mb-2"></div>
+        <input type="text" id="chatInput" placeholder="Nhập tin nhắn..." class="w-full p-2 border border-gray-300 rounded-md mb-2">
+        <button id="sendChatBtn" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Gửi</button>
+    </div>
+</div>
+
+<div class="profile-container max-w-6xl mx-auto pt-24 px-4">
+    <div class="bg-white rounded-lg shadow-md mb-4">
+        <div class="h-80 bg-gradient-to-br from-blue-600 to-gray-600 rounded-t-lg relative ">
+        </div>
+
+        <div class="flex flex-col md:flex-row p-4 pt-0">
+            <div class="flex justify-center -mt-28 relative z-10">
+                <img id="profile-avatar"
+                     class="w-52 h-52 rounded-full border-4 border-white object-cover bg-gray-300"
+                     src=""
+                     alt="Avatar">
+            </div>
+
+            <div class="flex-1 p-4 md:ml-6 mt-4 md:mt-0">
+                <h2 class="text-3xl font-bold mb-2" id="nickname">Đang tải...</h2>
+                <div class="flex items-center space-x-2">
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700">Thêm vào tin</button>
+                    <button class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md font-semibold hover:bg-gray-300">Chỉnh sửa trang cá nhân</button>
+                    <button class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md font-semibold hover:bg-gray-300"><i class="fas fa-ellipsis-h"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex border-t border-gray-200 px-4">
+            <div class="py-4 px-6 font-semibold text-gray-600 relative cursor-pointer active-nav-item">Bài viết</div>
+            <div class="py-4 px-6 font-semibold text-gray-600 relative cursor-pointer">Giới thiệu</div>
+            <div class="py-4 px-6 font-semibold text-gray-600 relative cursor-pointer">Bạn bè</div>
+            <div class="py-4 px-6 font-semibold text-gray-600 relative cursor-pointer">Ảnh</div>
+            <div class="py-4 px-6 font-semibold text-gray-600 relative cursor-pointer">Video</div>
+            <div class="py-4 px-6 font-semibold text-gray-600 relative cursor-pointer">Xem thêm</div>
         </div>
     </div>
 
-    <div class="main-content">
-        <div class="left-sidebar">
-            <div class="card">
-                <div class="card-header">Giới thiệu</div>
-                <div class="intro-item">
-                    <i class="fas fa-briefcase intro-icon"></i>
+    <div class="flex flex-col md:flex-row gap-4">
+        <div class="md:w-1/3 space-y-4">
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <h3 class="text-xl font-bold mb-3">Giới thiệu</h3>
+                <div class="flex items-center mb-3 text-gray-700">
+                    <i class="fas fa-briefcase text-gray-600 mr-3"></i>
                     <span>Làm việc tại Công ty ABC</span>
                 </div>
-                <div class="intro-item">
-                    <i class="fas fa-graduation-cap intro-icon"></i>
+                <div class="flex items-center mb-3 text-gray-700">
+                    <i class="fas fa-graduation-cap text-gray-600 mr-3"></i>
                     <span>Học tại Đại học XYZ</span>
                 </div>
-                <div class="intro-item">
-                    <i class="fas fa-home intro-icon"></i>
+                <div class="flex items-center mb-3 text-gray-700">
+                    <i class="fas fa-home text-gray-600 mr-3"></i>
                     <span>Sống tại Hà Nội</span>
                 </div>
-                <div class="intro-item">
-                    <i class="fas fa-heart intro-icon"></i>
+                <div class="flex items-center mb-3 text-gray-700">
+                    <i class="fas fa-heart text-gray-600 mr-3"></i>
                     <span>Độc thân</span>
                 </div>
-                <button style="width: 100%; padding: 8px; background: var(--secondary-color); border: none; border-radius: 6px; margin-top: 8px; cursor: pointer;">Chỉnh sửa chi tiết</button>
+                <button class="w-full p-2 bg-gray-200 rounded-md mt-2 font-semibold hover:bg-gray-300">Chỉnh sửa chi tiết</button>
             </div>
 
-            <div class="card">
-                <div class="card-header">Ảnh</div>
-                <div class="friend-list">
-                    <div class="friend-item">
-                        <img src="https://via.placeholder.com/100" alt="Photo" class="friend-avatar">
-                    </div>
-                    <div class="friend-item">
-                        <img src="https://via.placeholder.com/100" alt="Photo" class="friend-avatar">
-                    </div>
-                    <div class="friend-item">
-                        <img src="https://via.placeholder.com/100" alt="Photo" class="friend-avatar">
-                    </div>
-                    <div class="friend-item">
-                        <img src="https://via.placeholder.com/100" alt="Photo" class="friend-avatar">
-                    </div>
-                    <div class="friend-item">
-                        <img src="https://via.placeholder.com/100" alt="Photo" class="friend-avatar">
-                    </div>
-                    <div class="friend-item">
-                        <img src="https://via.placeholder.com/100" alt="Photo" class="friend-avatar">
-                    </div>
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <h3 class="text-xl font-bold mb-3">Ảnh</h3>
+                <div class="grid grid-cols-3 gap-2">
+                    <img src="https://via.placeholder.com/100" alt="Photo" class="w-full aspect-square object-cover rounded-md bg-gray-300">
+                    <img src="https://via.placeholder.com/100" alt="Photo" class="w-full aspect-square object-cover rounded-md bg-gray-300">
+                    <img src="https://via.placeholder.com/100" alt="Photo" class="w-full aspect-square object-cover rounded-md bg-gray-300">
+                    <img src="https://via.placeholder.com/100" alt="Photo" class="w-full aspect-square object-cover rounded-md bg-gray-300">
+                    <img src="https://via.placeholder.com/100" alt="Photo" class="w-full aspect-square object-cover rounded-md bg-gray-300">
+                    <img src="https://via.placeholder.com/100" alt="Photo" class="w-full aspect-square object-cover rounded-md bg-gray-300">
                 </div>
-                <button style="width: 100%; padding: 8px; background: var(--secondary-color); border: none; border-radius: 6px; margin-top: 8px; cursor: pointer;">Xem tất cả ảnh</button>
+                <button class="w-full p-2 bg-gray-200 rounded-md mt-2 font-semibold hover:bg-gray-300">Xem tất cả ảnh</button>
             </div>
-
-        <div class="center-content">
-            <div class="card create-post">
-                <div class="post-input">
-                    <img id="small-avatar" src="" alt="Avatar" class="post-input-avatar">
-                    <input type="text" class="post-input-field" placeholder="Bạn đang nghĩ gì?">
-                </div>
-                <div class="post-options">
-                    <div class="post-option">
-                        <i class="fas fa-video" style="color: #f3425f;"></i>
-                        <span>Video trực tiếp</span>
-                    </div>
-                    <div class="post-option">
-                        <i class="fas fa-images" style="color: #45bd62;"></i>
-                        <span>Ảnh/video</span>
-                    </div>
-                    <div class="post-option">
-                        <i class="fas fa-smile" style="color: #f7b928;"></i>
-                        <span>Cảm xúc</span>
-                    </div>
-
-                </div>
-            </div>
-
-            <div id="posts"></div>
         </div>
 
-        <div class="right-sidebar">
-            <div class="card">
-                <div class="card-header">Lời mời kết bạn</div>
-                <div class="intro-item">
-                    <img src="https://via.placeholder.com/40" alt="Friend" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 12px;">
-                    <div>
-                        <div style="font-weight: 600;">Nguyễn Văn Mới</div>
-                        <div style="font-size: 12px; color: var(--text-secondary);">5 bạn chung</div>
-                        <div style="display: flex; margin-top: 8px;">
-                            <button style="background: var(--primary-color); color: white; border: none; padding: 4px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-right: 8px;">Xác nhận</button>
-                            <button style="background: var(--secondary-color); color: var(--text-primary); border: none; padding: 4px 12px; border-radius: 6px; font-weight: 600; cursor: pointer;">Xóa</button>
-                        </div>
+        <div class="md:w-2/3 space-y-4">
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <div class="flex items-center mb-3">
+                    <img id="small-avatar" src="" alt="Avatar" class="w-10 h-10 rounded-full mr-3 object-cover bg-gray-300">
+                    <input type="text" class="flex-1 bg-gray-100 border border-gray-300 rounded-full py-2 px-4 outline-none" placeholder="Bạn đang nghĩ gì?">
+                </div>
+                <div class="flex justify-between border-t border-gray-200 pt-3">
+                    <div class="flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100">
+                        <i class="fas fa-video text-red-500 mr-2"></i>
+                        <span>Video trực tiếp</span>
+                    </div>
+                    <div class="flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100">
+                        <i class="fas fa-images text-green-500 mr-2"></i>
+                        <span>Ảnh/video</span>
+                    </div>
+                    <div class="flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100">
+                        <i class="fas fa-smile text-yellow-500 mr-2"></i>
+                        <span>Cảm xúc</span>
                     </div>
                 </div>
-                <div class="intro-item">
-                    <img src="https://via.placeholder.com/40" alt="Friend" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 12px;">
-                    <div>
-                        <div style="font-weight: 600;">Trần Thị Mới</div>
-                        <div style="font-size: 12px; color: var(--text-secondary);">2 bạn chung</div>
-                        <div style="display: flex; margin-top: 8px;">
-                            <button style="background: var(--primary-color); color: white; border: none; padding: 4px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-right: 8px;">Xác nhận</button>
-                            <button style="background: var(--secondary-color); color: var(--text-primary); border: none; padding: 4px 12px; border-radius: 6px; font-weight: 600; cursor: pointer;">Xóa</button>
-                        </div>
-                    </div>
-                </div>
-                <button style="width: 100%; padding: 8px; background: var(--secondary-color); border: none; border-radius: 6px; margin-top: 8px; cursor: pointer;">Xem tất cả</button>
             </div>
 
+            <div id="postsContainer">
+            </div>
+        </div>
+
+        <div class="md:w-1/4 space-y-4 mt-6 md:mt-0">
+            <div class="bg-white rounded-lg shadow-md p-4 min-h-96">
+                <h3 class="text-xl font-bold mb-3">Người liên hệ</h3>
+                <div id="followingsList" class="space-y-2">
+                    <div class="text-gray-500">Đang tải...</div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<script>
-    const token = localStorage.getItem("token");
-    if (!token) {
-        alert("Vui lòng đăng nhập.");
-        window.location.href = "/login";
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="/js/home.js"></script>
+<script src="/js/chat.js"></script>
+<script src="/js/profile.js"></script>
+<script src="/js/profile.js"></script> <style>
+    .active-nav-item:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--primary-color);
+        border-radius: 3px 3px 0 0;
     }
-
-    fetch("/v1/auth/info", {
-        headers: { "Authorization": "Bearer " + token }
-    })
-        .then(res => res.json())
-        .then(user => {
-            document.getElementById("avatar").src = user.avatarUrl || "https://via.placeholder.com/168";
-            document.getElementById("small-avatar").src = user.avatarUrl || "https://via.placeholder.com/40";
-            document.getElementById("nickname").innerText = user.nickName || "Không tên";
-        })
-        .catch(() => alert("Không thể tải thông tin người dùng."));
-
-    fetch("/v1/profile/post", {
-        headers: { "Authorization": "Bearer " + token }
-    })
-        .then(res => res.json())
-        .then(response => {
-            const posts = response.data;
-            const postsContainer = document.getElementById("posts");
-            posts.forEach(post => {
-                const div = document.createElement("div");
-                div.className = "card post";
-                div.innerHTML = `
-                    <div class="post-header">
-                        <img src="${post.url_avatar || 'https://via.placeholder.com/40'}" alt="Avatar" class="post-avatar">
-                        <div class="post-user">
-                            <div class="post-name">${post.nickname || 'Không tên'}</div>
-                            <div class="post-time">2 giờ trước · <i class="fas fa-globe-americas"></i></div>
-                        </div>
-                        <i class="fas fa-ellipsis-h" style="color: var(--text-secondary); cursor: pointer;"></i>
-                    </div>
-                    <div class="post-content">
-                        ${post.content || ''}
-                    </div>
-                    ${post.imageUrl ? `<img src="${post.imageUrl}" alt="Post Image" class="post-image">` : ''}
-                    <div class="post-stats">
-                        <div><i class="fas fa-thumbs-up" style="color: var(--primary-color);"></i> ${post.totalLikes || 0}</div>
-                        <div>${post.totalComments || 0} bình luận · 0 lượt chia sẻ</div>
-                    </div>
-                    <div class="post-actions">
-                        <div class="post-action">
-                            <i class="far fa-thumbs-up"></i>
-                            <span>Thích</span>
-                        </div>
-                        <div class="post-action">
-                            <i class="far fa-comment"></i>
-                            <span>Bình luận</span>
-                        </div>
-                        <div class="post-action">
-                            <i class="fas fa-share"></i>
-                            <span>Chia sẻ</span>
-                        </div>
-                    </div>
-                    ${(post.comments && post.comments.length > 0) ? `
-                    <div class="comments" style="background: var(--background-color); border-radius: 0 0 8px 8px; margin: -16px; margin-top: 8px; padding: 16px;">
-                        <div style="font-weight: 600; margin-bottom: 8px; color: var(--text-secondary);">${post.comments.length} bình luận</div>
-                        ${post.comments.map(comment => `
-                            <div style="display: flex; margin-bottom: 12px;">
-                                <img src="${comment.avatarUrl || 'https://via.placeholder.com/32'}" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 8px;" alt="">
-                                <div style="background: var(--secondary-color); padding: 8px 12px; border-radius: 18px; flex: 1;">
-                                    <div style="font-weight: 600; font-size: 13px;">${comment.nickName || 'Không tên'}</div>
-                                    <div style="font-size: 14px;">${comment.content || ''}</div>
-                                    <div style="display: flex; margin-top: 4px;">
-                                        <span style="font-size: 12px; color: var(--text-secondary); margin-right: 16px;">Thích</span>
-                                        <span style="font-size: 12px; color: var(--text-secondary);">Phản hồi</span>
-                                    </div>
-                                </div>
-                            </div>
-                        `).join('')}
-                        <div style="display: flex; margin-top: 8px;">
-                            <img src="${user.avatarUrl || 'https://via.placeholder.com/32'}" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 8px;">
-                            <input type="text" placeholder="Viết bình luận..." style="flex: 1; background: var(--secondary-color); border: none; border-radius: 18px; padding: 8px 12px; outline: none;">
-                        </div>
-                    </div>
-                    ` : ''}
-                `;
-                postsContainer.appendChild(div);
-            });
-        })
-        .catch(() => alert("Không thể tải bài viết."));
-</script>
+</style>
 </body>
 </html>
