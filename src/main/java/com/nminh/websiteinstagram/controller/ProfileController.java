@@ -1,7 +1,9 @@
 package com.nminh.websiteinstagram.controller;
 
+import com.nminh.websiteinstagram.model.request.ProfileRequestDTO;
 import com.nminh.websiteinstagram.model.response.ApiResponse;
 import com.nminh.websiteinstagram.service.ProfileService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/v1/profile")
 @RequiredArgsConstructor
 @Slf4j
+@SecurityRequirement(name = "bearerAuth")
 public class ProfileController {
 
     private final ProfileService profileService;
@@ -36,6 +39,13 @@ public class ProfileController {
         log.info("getFollowingsOfUserLogin");
         ApiResponse apiResponse = new ApiResponse(profileService.getFollowings());
         log.info("getFollowingsOfUserLoginSuccessfully");
+        return apiResponse;
+    }
+    @PutMapping("/update")
+    public ApiResponse updateProfile(@RequestBody ProfileRequestDTO requestDTO) {
+        log.info("start updateProfile");
+        ApiResponse apiResponse = new ApiResponse(profileService.updateProfile(requestDTO));
+        log.info("end updateProfile successfully");
         return apiResponse;
     }
 }

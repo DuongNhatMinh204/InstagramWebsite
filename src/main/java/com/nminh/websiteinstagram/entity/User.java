@@ -63,6 +63,21 @@ public class User {
     @CreationTimestamp
     private Date created ;
 
+    // --- Các trường Profile đã được gộp vào User ---
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "workplace")
+    private String workplace;
+
+    @Column(name = "marital_status")
+    private String maritalStatus;
+
+    @Column(name = "education")
+    private String education;
+    // --- Hết các trường Profile ---
+
+
     // Danh sách người mình đang theo dõi
     @OneToMany(mappedBy = "follower")
     @JsonIgnore
@@ -89,9 +104,6 @@ public class User {
     @JsonIgnore
     private List<Message> sentMessage = new ArrayList<>();
 
-    @OneToMany(mappedBy = "receiver")
-    @JsonIgnore
-    private List<Message> receivedMessage = new ArrayList<>();
-
-
+    // Không còn @OneToOne cho UserProfileEntity nữa
+    // private UserProfileEntity profile;
 }

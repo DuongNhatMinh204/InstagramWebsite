@@ -3,6 +3,12 @@ package com.nminh.websiteinstagram.config;
 import com.nminh.websiteinstagram.security.CustomUserDetailsService;
 import com.nminh.websiteinstagram.security.JWTService;
 import com.nminh.websiteinstagram.security.JwtAuthenticationFilter;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +27,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
+@OpenAPIDefinition(
+        info = @Info(title = "My API", version = "1.0", description = "API description"),
+        security = @SecurityRequirement(name = "bearerAuth") // Gắn global
+)
+@SecurityScheme(
+        name = "bearerAuth", // tên này dùng ở @SecurityRequirement
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer",
+        bearerFormat = "JWT",
+        in = SecuritySchemeIn.HEADER
+)
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -48,6 +65,7 @@ public class SecurityConfig {
                                 "register",
                                 "/home",
                                 "/profile",
+                                "/edit",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
