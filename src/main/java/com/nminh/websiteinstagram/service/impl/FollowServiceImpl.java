@@ -118,4 +118,15 @@ public class FollowServiceImpl implements FollowService {
         followerResponseDTO.setFollowers(userResponseDTOS);
         return followerResponseDTO;
     }
+
+    @Override
+    public Boolean checkFollowing(Long followingUserId) {
+        Long userId = SecurityUtil.getCurrentUserId();
+        User user = userRepository.findById(userId).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTS));
+        User userCheckFollowing = userRepository.findById(followingUserId).orElse(null);
+       if(followRepository.findByFollowerAndFollowing(user, userCheckFollowing) != null){
+           return true;
+       }
+       return false;
+    }
 }

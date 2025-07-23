@@ -7,4 +7,5 @@ public interface FollowService {
     String unfollow(Long toUnfollowingUserId);
     FollowerResponseDTO getFollowers();
     FollowerResponseDTO getFollowing();
+    Boolean checkFollowing( Long followingUserId);
 }

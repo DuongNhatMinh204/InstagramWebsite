@@ -48,4 +48,10 @@ public class FollowController {
         log.info("Following user successfully listFollowing");
         return apiResponse;
     }
+
+    @GetMapping("/check-follow")
+    public Boolean checkFollow(@RequestParam Long followingUserId) {
+        log.info("Check following user  following {}",  followingUserId);
+        return followService.checkFollowing(followingUserId);
+    }
 }

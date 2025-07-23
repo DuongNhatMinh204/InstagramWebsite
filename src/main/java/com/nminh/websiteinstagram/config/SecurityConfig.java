@@ -32,7 +32,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
         security = @SecurityRequirement(name = "bearerAuth") // Gắn global
 )
 @SecurityScheme(
-        name = "bearerAuth", // tên này dùng ở @SecurityRequirement
+        name = "bearerAuth",
         type = SecuritySchemeType.HTTP,
         scheme = "bearer",
         bearerFormat = "JWT",
@@ -73,10 +73,11 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
                                 "/swagger-resources/**",
-                                "/webjars/**"
+                                "/webjars/**",
+                                "/search-results.html"
                         ).permitAll()
                         .requestMatchers("/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/chat/**","/v1/user/chat/**","/v1/profile/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/chat/**","/v1/user/chat/**","/v1/profile/**","/v1/user/unfollowing").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

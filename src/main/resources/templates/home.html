@@ -9,6 +9,10 @@
 <!-- Navigation -->
 <nav class="nav-bar">
     <h1>Instagram</h1>
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Tìm kiếm người dùng..." autocomplete="off">
+        <button id="searchButton" class="search-button">🔍</button>
+    </div>
     <div class="nav-items">
         <span>🏠 Home</span>
         <button id="openModalBtn">💬 Messages</button>
@@ -86,6 +90,7 @@
 <script src="/js/home.js"></script>
 <script src="/js/chat.js"></script>
 <script src="/js/profile.js"></script>
+<script src="/js/search.js"></script>
 <script>
 // hiển thị ảnh trước khi upload
 document.getElementById("imgFile").addEventListener("change", function (event) {
@@ -269,18 +274,14 @@ document.addEventListener('DOMContentLoaded', function() {
 })
     .catch(error => {
     console.error("Error fetching user info:", error);
-    // Có thể xử lý lỗi ở đây, ví dụ: chuyển hướng về login nếu token không hợp lệ
-    // localStorage.removeItem('token');
-    // localStorage.removeItem('userId');
-    // window.location.href = '/login';
+
 });
 } else {
-    // Nếu không có token, ẩn hoặc thay thế phần đăng bài nếu cần
+
     const postForm = document.getElementById("postForm");
     if (postForm) {
      postForm.style.display = 'none'; // Ẩn form đăng bài
-    // Hoặc chuyển hướng nếu người dùng chưa đăng nhập mà vào trang home
-    // window.location.href = '/login';
+
 }
     const currentUserAvatar = document.getElementById("currentUserAvatar");
     if (currentUserAvatar) {
@@ -383,14 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 }
 
-    // Logic đóng modal Profile (không cần nữa vì đã thay bằng dropdown)
-    // const profileModal = document.getElementById('profileModal');
-    // const closeProfileSpan = document.querySelector('#profileModal .closeProfile');
-    // if(closeProfileSpan) {
-    //     closeProfileSpan.onclick = function() {
-    //         profileModal.style.display = 'none';
-    //     }
-    // }
+
 });
 
 </script>

@@ -632,3 +632,34 @@ a {
     cursor: pointer;
     font-size: 20px;
 }
+.search-container {
+    position: relative;
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+    width: 200px;
+    font-size: 14px;
+}
+
+.search-button {
+    padding: 8px 12px;
+    margin-left: 5px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    background-color: #667eea;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.search-button:hover {
+    background-color: #5a67d8;
+}
