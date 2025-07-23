@@ -18,9 +18,10 @@ public class WebController {
 
     @GetMapping("/register")
     public String registerPage() {return "register";}
-    @GetMapping("/edit")
-    public String showEditProfilePage() {
-        return "update-profile"; // Trả về tên file HTML: update-profile.html
+
+    @GetMapping("/edit-profile")
+    public String editProfilePage() {
+        return "edit-profile"; // Nếu bạn dùng Thymeleaf hoặc template engine
     }
 
 }

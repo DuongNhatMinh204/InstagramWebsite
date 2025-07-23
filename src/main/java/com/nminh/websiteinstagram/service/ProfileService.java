@@ -15,4 +15,5 @@ public interface ProfileService {
     Object getFollowings();
     ProfileDTO updateProfile(ProfileRequestDTO requestDTO);
 
+    List<PostResponseDTO> getPostsOfUser(Long userId);
 }

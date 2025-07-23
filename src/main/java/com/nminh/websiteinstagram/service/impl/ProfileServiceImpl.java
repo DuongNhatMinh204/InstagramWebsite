@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -116,5 +117,15 @@ public class ProfileServiceImpl implements ProfileService {
 
         // Sử dụng ProfileMapper để ánh xạ User sang ProfileDTO
         return profileMapper.toProfileDTO(user);
+    }
+    @Override
+    public List<PostResponseDTO> getPostsOfUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTS)); // Xử lý nếu user không tồn tại
+        List<Post> posts = user.getPosts(); // Lấy danh sách bài viết từ User entity
+
+        return posts.stream()
+                .map(postMapper::toPostResponseDTO)
+                .collect(Collectors.toList());
     }
 }

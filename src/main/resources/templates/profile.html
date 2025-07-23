@@ -4,14 +4,17 @@
     <meta charset="UTF-8" />
     <title>Trang Cá Nhân - Instagram Clone</title>
     <link rel="stylesheet" href="/css/home.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="manifest" href="/site.webmanifest">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body class="bg-gray-200 text-gray-800">
 <nav class="flex justify-between items-center bg-white shadow-md py-2 px-4 fixed top-0 left-0 right-0 z-50">
-    <h1 class="text-2xl font-bold text-blue-600">Instagram</h1>
+    <h1 class="text-2xl font-bold text-red-600">Instagram</h1>
     <div class="flex items-center space-x-4">
-        <span class="text-lg">🏠 Home</span>
+        <a href="/home" class="text-lg">🏠 Home</a>
         <button id="openModalBtn" class="text-lg">💬 Messages</button>
         <div id="chatModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
             <div class="bg-white p-6 rounded-lg shadow-xl w-96">
@@ -57,82 +60,73 @@
             <div class="flex-1 p-4 md:ml-6 mt-4 md:mt-0">
                 <h2 class="text-3xl font-bold mb-2" id="nickname">Đang tải...</h2>
                 <div class="flex items-center space-x-2">
-                    <button class="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700">Thêm vào tin</button>
-                    <button class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md font-semibold hover:bg-gray-300">Chỉnh sửa trang cá nhân</button>
-                    <button class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md font-semibold hover:bg-gray-300"><i class="fas fa-ellipsis-h"></i></button>
+                    <button class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md font-semibold hover:bg-gray-300">
+                        <a href="/edit-profile" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md font-semibold hover:bg-gray-300">
+                            Chỉnh sửa trang cá nhân
+                        </a></button>
                 </div>
             </div>
         </div>
-
-        <div class="flex border-t border-gray-200 px-4">
-            <div class="py-4 px-6 font-semibold text-gray-600 relative cursor-pointer active-nav-item">Bài viết</div>
-            <div class="py-4 px-6 font-semibold text-gray-600 relative cursor-pointer">Giới thiệu</div>
-            <div class="py-4 px-6 font-semibold text-gray-600 relative cursor-pointer">Bạn bè</div>
-            <div class="py-4 px-6 font-semibold text-gray-600 relative cursor-pointer">Ảnh</div>
-            <div class="py-4 px-6 font-semibold text-gray-600 relative cursor-pointer">Video</div>
-            <div class="py-4 px-6 font-semibold text-gray-600 relative cursor-pointer">Xem thêm</div>
-        </div>
-    </div>
-
     <div class="flex flex-col md:flex-row gap-4">
         <div class="md:w-1/3 space-y-4">
             <div class="bg-white rounded-lg shadow-md p-4">
                 <h3 class="text-xl font-bold mb-3">Giới thiệu</h3>
                 <div class="flex items-center mb-3 text-gray-700">
-                    <i class="fas fa-briefcase text-gray-600 mr-3"></i>
-                    <span>Làm việc tại Công ty ABC</span>
+                    <i class="fas fa-user text-gray-600 mr-3"></i>
+                    <span id="fullNameDisplay"></span>
                 </div>
-                <div class="flex items-center mb-3 text-gray-700">
-                    <i class="fas fa-graduation-cap text-gray-600 mr-3"></i>
-                    <span>Học tại Đại học XYZ</span>
+                <div class="mb-3 text-gray-700">
+                    <div class="flex items-center">
+                        <i class="fas fa-birthday-cake text-gray-600 mr-3"></i>
+                        <span class="font-bold" >Sinh Nhật:</span>
+                    </div>
+                    <span id="birthdayDisplay"></span>
                 </div>
-                <div class="flex items-center mb-3 text-gray-700">
-                    <i class="fas fa-home text-gray-600 mr-3"></i>
-                    <span>Sống tại Hà Nội</span>
+
+                <div class="mb-3 text-gray-700">
+                    <div class="flex items-center">
+                        <i class="fas fa-home text-gray-600 mr-2"></i>
+                        <span class="font-bold" >Công tác tại:</span>
+                    </div>
+                    <span id="workplaceDisplay"></span>
+                </div>
+                <div class="mb-3 text-gray-700">
+                    <div class="flex items-center">
+                        <i class="fas fa-graduation-cap text-gray-600 mb-1"></i>
+                        <span class="font-bold">Học Vấn:</span>
+                    </div>
+                    <span id="educationDisplay"></span>
+                </div>
+                <div class="mb-3 text-gray-700">
+                    <div class="flex items-center">
+                        <i class="fas fa-home text-gray-600 mb-1"></i>
+                        <span  class="font-bold">Sống tại:</span>
+                    </div>
+                    <span id="addressDisplay"></span>
                 </div>
                 <div class="flex items-center mb-3 text-gray-700">
                     <i class="fas fa-heart text-gray-600 mr-3"></i>
-                    <span>Độc thân</span>
+                    <span id="maritalStatusDisplay"></span>
                 </div>
-                <button class="w-full p-2 bg-gray-200 rounded-md mt-2 font-semibold hover:bg-gray-300">Chỉnh sửa chi tiết</button>
+
+                <button class="w-full p-2 bg-gray-200 rounded-md mt-2 font-semibold hover:bg-gray-300">
+                    <a href="/edit-profile" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md font-semibold hover:bg-gray-300">
+                        Chỉnh sửa trang cá nhân
+                    </a>
+                </button>
             </div>
 
             <div class="bg-white rounded-lg shadow-md p-4">
                 <h3 class="text-xl font-bold mb-3">Ảnh</h3>
-                <div class="grid grid-cols-3 gap-2">
-                    <img src="https://via.placeholder.com/100" alt="Photo" class="w-full aspect-square object-cover rounded-md bg-gray-300">
-                    <img src="https://via.placeholder.com/100" alt="Photo" class="w-full aspect-square object-cover rounded-md bg-gray-300">
-                    <img src="https://via.placeholder.com/100" alt="Photo" class="w-full aspect-square object-cover rounded-md bg-gray-300">
-                    <img src="https://via.placeholder.com/100" alt="Photo" class="w-full aspect-square object-cover rounded-md bg-gray-300">
-                    <img src="https://via.placeholder.com/100" alt="Photo" class="w-full aspect-square object-cover rounded-md bg-gray-300">
-                    <img src="https://via.placeholder.com/100" alt="Photo" class="w-full aspect-square object-cover rounded-md bg-gray-300">
+                <div id="randomPhotosGrid" class="grid grid-cols-3 gap-2">
+                    <p class="text-gray-500 col-span-3 text-center">Đang tải ảnh ngẫu nhiên...</p>
                 </div>
                 <button class="w-full p-2 bg-gray-200 rounded-md mt-2 font-semibold hover:bg-gray-300">Xem tất cả ảnh</button>
             </div>
         </div>
 
         <div class="md:w-2/3 space-y-4">
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <div class="flex items-center mb-3">
-                    <img id="small-avatar" src="" alt="Avatar" class="w-10 h-10 rounded-full mr-3 object-cover bg-gray-300">
-                    <input type="text" class="flex-1 bg-gray-100 border border-gray-300 rounded-full py-2 px-4 outline-none" placeholder="Bạn đang nghĩ gì?">
-                </div>
-                <div class="flex justify-between border-t border-gray-200 pt-3">
-                    <div class="flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100">
-                        <i class="fas fa-video text-red-500 mr-2"></i>
-                        <span>Video trực tiếp</span>
-                    </div>
-                    <div class="flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100">
-                        <i class="fas fa-images text-green-500 mr-2"></i>
-                        <span>Ảnh/video</span>
-                    </div>
-                    <div class="flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100">
-                        <i class="fas fa-smile text-yellow-500 mr-2"></i>
-                        <span>Cảm xúc</span>
-                    </div>
-                </div>
-            </div>
-
+            <h1 class="text-2xl font-bold">Bài Viết</h1>
             <div id="postsContainer">
             </div>
         </div>
@@ -153,7 +147,7 @@
 <script src="/js/home.js"></script>
 <script src="/js/chat.js"></script>
 <script src="/js/profile.js"></script>
-<script src="/js/profile.js"></script> <style>
+<script src="/js/profile.js"></script><style>
     .active-nav-item:after {
         content: '';
         position: absolute;

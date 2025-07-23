@@ -10,7 +10,59 @@ function openChatModalWith(nickName, avatarUrl, userId) {
 
 // Global function for profile-related modal interaction (if needed elsewhere)
 window.openChatModalWith = openChatModalWith;
+/**
+ * Lấy tất cả URL hình ảnh từ các bài viết của người dùng hiện đang đăng nhập.
+ * @returns {Promise<Array<string>>} Một Promise giải quyết với một mảng các URL hình ảnh.
+ * Trả về một mảng rỗng nếu không có token, lỗi xảy ra, hoặc không có ảnh.
+ */
+async function getLoggedInUserImageUrls() {
+    const token = localStorage.getItem("token");
+    const currentUserId = localStorage.getItem("userId"); // Lấy userId của người dùng đang đăng nhập
 
+    if (!token) {
+        console.warn("Không tìm thấy token. Vui lòng đăng nhập.");
+        return [];
+    }
+
+    if (!currentUserId) {
+        console.error("Không tìm thấy User ID trong localStorage. Không thể lấy ảnh.");
+        return [];
+    }
+
+    try {
+        // SỬA URL ĐỂ BAO GỒM USER ID CỦA NGƯỜI DÙNG ĐANG ĐĂNG NHẬP
+        const response = await fetch(`/v1/profile/posts/user/${currentUserId}`, {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+                console.error("Phiên đăng nhập hết hạn hoặc không có quyền. Vui lòng đăng nhập lại.");
+                localStorage.removeItem("token");
+                // Tùy chọn: Chuyển hướng về trang đăng nhập
+                // window.location.href = "/login";
+            } else {
+                console.error(`Lỗi khi lấy bài viết: ${response.status} ${response.statusText}`);
+            }
+            return [];
+        }
+
+        const data = await response.json();
+        const posts = data.data;
+
+        const imageUrls = posts
+            .filter(post => post.img_url)
+            .map(post => post.img_url);
+
+        return imageUrls;
+
+    } catch (error) {
+        console.error("Lỗi mạng hoặc lỗi khác khi lấy URL ảnh:", error);
+        return [];
+    }
+}
 document.addEventListener('DOMContentLoaded', function() {
     const token = localStorage.getItem("token");
     const userIdFromLocalStorage = localStorage.getItem("userId"); // Get current user ID
@@ -40,7 +92,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return res.json();
         })
         .then(user => {
-            // Update profile avatar and nickname in the main profile header
             const profileAvatar = document.getElementById("profile-avatar");
             if (profileAvatar) profileAvatar.src = user.avatarUrl || "https://via.placeholder.com/168";
 
@@ -50,9 +101,63 @@ document.addEventListener('DOMContentLoaded', function() {
             const nickname = document.getElementById("nickname");
             if (nickname) nickname.innerText = user.nickName || "Không tên";
 
-            // Update current user avatar for the "create post" section if it still exists
-            const currentUserAvatar = document.getElementById("currentUserAvatar");
-            if (currentUserAvatar) currentUserAvatar.src = user.avatarUrl || "/images/logo.jpg"; // This ID might not exist after layout change
+            const fullName = document.getElementById("fullNameDisplay");
+            if (fullName) fullName.innerText = user.fullName || "";
+
+            const workplace = document.getElementById("workplaceDisplay");
+            if (workplace) workplace.innerText = user.workplace || "";
+
+            const education = document.getElementById("educationDisplay");
+            if (education) education.innerText = user.education || "";
+
+            const address = document.getElementById("addressDisplay");
+            if (address) address.innerText = user.address || "";
+
+            const maritalStatus = document.getElementById("maritalStatusDisplay");
+            if (maritalStatus) maritalStatus.innerText = user.maritalStatus || "";
+
+            const birthday = document.getElementById("birthdayDisplay");
+            if (birthday) birthday.innerText = user.birthday || "";
+
+            const editBtn = document.getElementById("editProfileButton");
+            if (editBtn) editBtn.href = "/v1/profile/update";
+
+            getLoggedInUserImageUrls().then(imageUrls => {
+                console.log("Tất cả URL ảnh của người dùng đã đăng nhập:", imageUrls);
+
+                const randomPhotosGrid = document.getElementById("randomPhotosGrid");
+                if (randomPhotosGrid) {
+                    if (imageUrls.length === 0) {
+                        randomPhotosGrid.innerHTML = '<p class="text-gray-500 col-span-3 text-center">Chưa có ảnh nào để hiển thị.</p>';
+                        return;
+                    }
+
+                    // Hàm để xáo trộn mảng (Fisher-Yates shuffle)
+                    function shuffleArray(array) {
+                        for (let i = array.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [array[i], array[j]] = [array[j], array[i]]; // Hoán đổi vị trí
+                        }
+                    }
+
+                    shuffleArray(imageUrls); // Xáo trộn mảng URL ảnh
+
+                    // Chọn tối đa 6 ảnh để hiển thị (hoặc ít hơn nếu không đủ)
+                    const photosToDisplay = imageUrls.slice(0, 6);
+
+                    randomPhotosGrid.innerHTML = photosToDisplay.map(url => `
+                        <img src="${url}" alt="Ảnh người dùng" class="w-full aspect-square object-cover rounded-md bg-gray-300">
+                    `).join('');
+                }
+
+            }).catch(error => {
+                console.error("Lỗi khi lấy URL ảnh của người dùng để hiển thị ngẫu nhiên:", error);
+                const randomPhotosGrid = document.getElementById("randomPhotosGrid");
+                if (randomPhotosGrid) {
+                    randomPhotosGrid.innerHTML = '<p class="text-red-500 col-span-3 text-center">Không thể tải ảnh.</p>';
+                }
+            });
+
         })
         .catch(error => {
             console.error("Error fetching user info:", error);
@@ -114,7 +219,6 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         authNavButtonContainer.innerHTML = '<a href="/login" class="text-lg">🔓 Login</a>';
     }
-
 
     // Logic for chat modals
     const chatModal = document.getElementById('chatModal');
@@ -223,7 +327,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 postsContainer.innerHTML = '<div class="bg-white rounded-lg shadow-md p-4 text-center text-gray-500">Chưa có bài viết nào.</div>';
                 return;
             }
-
             postsContainer.innerHTML = posts.map(post => `
             <div class="bg-white rounded-lg shadow-md p-4 mb-4">
                 <div class="flex items-center mb-3">
