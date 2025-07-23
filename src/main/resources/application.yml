@@ -1,0 +1,34 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: social
+  datasource:
+    url: jdbc:mysql://localhost:3306/instagram
+    username: thangdv
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+#  config:
+#    import: optional:configserver:http://config-server:8888
+
+jwt:
+  secret: xIllBhvQTHZLRu6wlhLcZpIDqPNkjMAeZNXkM9/crVIPmQKx3PmznB3MR/X2usri
+
+logging:
+  file:
+    name: logs/access.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [${spring.application.name:},%X{traceId:-},%X{spanId:-}] ${LOG_LEVEL_PATTERN:-%5p} %logger{15}.%M %m%n"
+  level:
+    root: ERROR
+    com:
+      rsoft:
+        root: WARN
+        core:
+          temple: DEBUG

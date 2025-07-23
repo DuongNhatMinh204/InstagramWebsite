@@ -53,7 +53,6 @@ public class UserServiceImpl implements UserService {
         }
         User user = userRepository.findByPhone(userLoginDTO.getPhone())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTS)) ;
-        //kiểm tra với mật khẩu mã hóa trong database
         if(!passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword())){
             throw new AppException(ErrorCode.PASSSWORD_MISMATCH) ;
         }

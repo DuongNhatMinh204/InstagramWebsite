@@ -24,6 +24,11 @@ public enum ErrorCode {
     TOKEN_EXPIRED(1013,"token expired" , HttpStatus.BAD_REQUEST) ,
     NOT_FOUND_USER_ID(1014,"not found user id in token" , HttpStatus.BAD_REQUEST),
     FILE_NOT_VALID(1015,"file not valid" , HttpStatus.BAD_REQUEST) ,
+    INVALID_DATE_FORMAT(1016,"invalid date format, must be dd-MM-yyyy" , HttpStatus.BAD_REQUEST) ,
+    UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
+    INVALID_PASSWORD(1002, "Invalid password", HttpStatus.BAD_REQUEST),
+    UNAUTHENTICATED(1003, "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED(1004, "You do not have permission", HttpStatus.FORBIDDEN),
     ;
 
 

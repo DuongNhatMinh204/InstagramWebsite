@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chỉnh sửa Trang Cá Nhân</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex items-center justify-center">
+<div class="bg-white rounded-lg shadow-md p-6 w-full max-w-xl">
+  <h2 class="text-2xl font-bold mb-4">Chỉnh sửa thông tin cá nhân</h2>
+
+  <form id="editProfileForm">
+    <div class="mb-4">
+      <label class="block font-semibold">Tên hiển thị</label>
+      <input type="text" id="nickname" name="nickname" class="w-full border border-gray-300 p-2 rounded" />
+    </div>
+
+    <div class="mb-4">
+      <label class="block font-semibold">Công ty</label>
+      <input type="text" id="workplace" name="workplace" class="w-full border border-gray-300 p-2 rounded" />
+    </div>
+
+    <div class="mb-4">
+      <label class="block font-semibold">Trường học</label>
+      <input type="text" id="education" name="education" class="w-full border border-gray-300 p-2 rounded" />
+    </div>
+
+    <div class="mb-4">
+      <label class="block font-semibold">Thành phố</label>
+      <input type="text" id="address" name="address" class="w-full border border-gray-300 p-2 rounded" />
+    </div>
+
+    <div class="mb-4">
+      <label class="block font-semibold">Tình trạng hôn nhân</label>
+      <input type="text" id="maritalStatus" name="maritalStatus" class="w-full border border-gray-300 p-2 rounded" />
+    </div>
+
+    <div class="mb-4">
+      <label class="block font-semibold">Ảnh đại diện mới</label>
+      <input type="file" id="avatar" name="avatar" />
+    </div>
+
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Lưu</button>
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem("token");
+    const userIdFromLocalStorage = localStorage.getItem("userId");
+
+    if (!token) {
+      alert("Vui lòng đăng nhập.");
+      window.location.href = "/login";
+      return;
+    }
+
+    fetch("/v1/auth/info", {
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    })
+            .then(res => {
+              if (!res.ok) throw new Error("Không thể tải thông tin người dùng.");
+              return res.json();
+            })
+            .then(user => {
+              document.getElementById("nickname").value = user.nickName || "";
+              document.getElementById("workplace").value = user.workplace || "";
+              document.getElementById("education").value = user.education || "";
+              document.getElementById("address").value = user.address || "";
+              document.getElementById("maritalStatus").value = user.maritalStatus || "";
+            })
+            .catch(err => {
+              console.error(err);
+              alert("Vui lòng đăng nhập lại.");
+              localStorage.removeItem("token");
+              window.location.href = "/login";
+            });
+
+    document.getElementById("editProfileForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const profileData = {
+        nickName: document.getElementById("nickname").value,
+        workplace: document.getElementById("workplace").value,
+        education: document.getElementById("education").value,
+        address: document.getElementById("address").value,
+        maritalStatus: document.getElementById("maritalStatus").value
+      };
+
+      const avatarFile = document.getElementById("avatar").files[0];
+      let avatarUrl = null;
+
+      try {
+        // 1. Tải lên ảnh đại diện nếu có
+        if (avatarFile) {
+          const avatarFormData = new FormData();
+          avatarFormData.append("file", avatarFile); // "file" phải khớp với @RequestParam("file") trong ImageUploadController
+
+          const uploadRes = await fetch("/api/images/upload", { // Sử dụng endpoint của ImageUploadController
+            method: "POST",
+            headers: {
+              "Authorization": "Bearer " + token
+              // Content-Type không cần đặt cho FormData, trình duyệt sẽ tự động thêm boundary
+            },
+            body: avatarFormData
+          });
+
+          if (!uploadRes.ok) {
+            throw new Error("Có lỗi khi tải lên ảnh đại diện.");
+          }
+          avatarUrl = await uploadRes.text(); // Endpoint trả về URL ảnh dưới dạng plain text
+          console.log("Avatar uploaded successfully. URL:", avatarUrl);
+
+          // 2. Cập nhật URL ảnh đại diện vào profileData
+          // Gọi API update-avt nếu bạn có endpoint riêng cho việc cập nhật avatar URL sau khi upload
+          // Hoặc bạn có thể thêm avatarUrl vào ProfileRequestDTO và xử lý trong ProfileService
+          // Hiện tại ProfileRequestDTO không có avatarUrl, nên chúng ta sẽ dùng endpoint upload-avt riêng
+          const updateAvatarRes = await fetch("/v1/profile/upload-avt", { // Sử dụng endpoint upload-avt trong ProfileController
+            method: "POST",
+            headers: {
+              "Authorization": "Bearer " + token,
+              "Content-Type": "application/x-www-form-urlencoded" // Vì @RequestParam String pathUrl
+            },
+            body: `pathUrl=${encodeURIComponent(avatarUrl)}`
+          });
+
+          if (!updateAvatarRes.ok) {
+            throw new Error("Có lỗi khi cập nhật URL ảnh đại diện.");
+          }
+          console.log("Avatar URL updated successfully.");
+        }
+
+        // 3. Cập nhật thông tin hồ sơ (không bao gồm avatar)
+        const updateProfileRes = await fetch("/v1/profile/update", {
+          method: "PUT", // Giữ nguyên là PUT
+          headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json" // Đặt Content-Type là JSON
+          },
+          body: JSON.stringify(profileData) // Gửi dữ liệu profile dưới dạng JSON
+        });
+
+        if (updateProfileRes.ok) {
+          alert("Cập nhật thành công!");
+          window.location.href = "/profile";
+        } else {
+          alert("Có lỗi xảy ra khi cập nhật thông tin hồ sơ.");
+        }
+
+      } catch (err) {
+        console.error("Update error:", err);
+        alert("Lỗi khi gửi dữ liệu: " + err.message);
+      }
+    });
+  });
+</script>
+</body>
+</html>

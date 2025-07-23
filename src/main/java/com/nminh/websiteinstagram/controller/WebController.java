@@ -15,4 +15,13 @@ public class WebController {
     }
     @GetMapping("/profile")
     public String profilePage() {return "profile";}
+
+    @GetMapping("/register")
+    public String registerPage() {return "register";}
+
+    @GetMapping("/edit-profile")
+    public String editProfilePage() {
+        return "edit-profile"; // Nếu bạn dùng Thymeleaf hoặc template engine
+    }
+
 }

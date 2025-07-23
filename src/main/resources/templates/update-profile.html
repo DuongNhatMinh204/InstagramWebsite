@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Chỉnh Sửa Trang Cá Nhân - Instagram Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        /* Optional custom styles */
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3b82f6;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+
+<nav class="flex justify-between items-center bg-white shadow-md py-2 px-4 fixed top-0 left-0 right-0 z-50">
+    <a href="/home" class="text-2xl font-bold text-blue-600">Instagram</a>
+    <div class="flex items-center space-x-4">
+        <a href="/home" class="text-lg text-gray-700 hover:text-blue-600">🏠 Trang Chủ</a>
+        <a href="/v1/profile" class="text-lg text-gray-700 hover:text-blue-600">👤 Trang Cá Nhân</a>
+    </div>
+</nav>
+
+<div class="container mx-auto p-6 mt-20">
+    <div class="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Chỉnh Sửa Trang Cá Nhân</h2>
+
+        <form id="profileUpdateForm" class="space-y-6">
+            <div class="flex flex-col items-center mb-6">
+                <img id="profile-avatar-preview" src="https://via.placeholder.com/150" alt="Avatar" class="w-32 h-32 rounded-full object-cover border-4 border-blue-500 shadow-md mb-4">
+                <input type="file" id="avatarFile" class="hidden" accept="image/*">
+                <button type="button" id="changeAvatarBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out">
+                    Thay đổi ảnh đại diện
+                </button>
+                <p id="avatarUploadStatus" class="text-sm mt-2"></p>
+            </div>
+
+            <div>
+                <label for="fullName" class="block text-gray-700 text-sm font-bold mb-2">Họ và tên:</label>
+                <input type="text" id="fullName" name="fullName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Nhập họ và tên">
+            </div>
+
+            <div>
+                <label for="nickName" class="block text-gray-700 text-sm font-bold mb-2">Tên người dùng:</label>
+                <input type="text" id="nickName" name="nickName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Nhập tên người dùng">
+            </div>
+
+            <div>
+                <label for="birthday" class="block text-gray-700 text-sm font-bold mb-2">Ngày sinh:</label>
+                <input type="text" id="birthday" name="birthday" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="DD-MM-YYYY">
+            </div>
+
+            <div>
+                <label for="gender" class="block text-gray-700 text-sm font-bold mb-2">Giới tính:</label>
+                <select id="gender" name="gender" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="">Chọn giới tính</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                    <option value="Khác">Khác</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="address" class="block text-gray-700 text-sm font-bold mb-2">Địa chỉ:</label>
+                <input type="text" id="address" name="address" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Nhập địa chỉ">
+            </div>
+
+            <div>
+                <label for="workplace" class="block text-gray-700 text-sm font-bold mb-2">Nơi làm việc:</label>
+                <input type="text" id="workplace" name="workplace" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Nhập nơi làm việc">
+            </div>
+
+            <div>
+                <label for="maritalStatus" class="block text-gray-700 text-sm font-bold mb-2">Tình trạng hôn nhân:</label>
+                <select id="maritalStatus" name="maritalStatus" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="">Chọn tình trạng</option>
+                    <option value="Độc thân">Độc thân</option>
+                    <option value="Đã kết hôn">Đã kết hôn</option>
+                    <option value="Đang hẹn hò">Đang hẹn hò</option>
+                    <option value="Phức tạp">Phức tạp</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="education" class="block text-gray-700 text-sm font-bold mb-2">Học vấn:</label>
+                <input type="text" id="education" name="education" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Nhập học vấn">
+            </div>
+
+            <div class="flex items-center justify-between">
+                <button type="submit" id="saveProfileBtn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center">
+                    <span id="saveProfileText">Lưu thay đổi</span>
+                    <div id="saveProfileSpinner" class="loading-spinner ml-2 hidden"></div>
+                </button>
+                <a href="/v1/profile" class="inline-block align-baseline font-bold text-blue-500 hover:text-blue-800">Hủy</a>
+            </div>
+            <div id="profileUpdateStatus" class="mt-4 text-center"></div>
+        </form>
+    </div>
+</div>
+
+<script src="/js/update-profile.js"></script>
+</body>
+</html>
