@@ -1,4 +1,3 @@
-
 // Biến toàn cục để lưu trữ kết nối STOMP và trạng thái chat
 let stompClient = null;
 let currentChatUserId = null;
@@ -31,26 +30,22 @@ function connectWebSocket() {
         // Đăng ký lắng nghe tin nhắn từ /user/{userId}/queue/messages
         stompClient.subscribe(`/user/${userId}/queue/messages`, function (message) {
             const savedMessage = JSON.parse(message.body);
-            console.log("Tin nhắn nhận được:", savedMessage);
-
-            // Chỉ hiển thị tin nhắn nếu nó đến từ người dùng đang chat
-            if (savedMessage.senderId === currentChatUserId) {
+            // Nếu modal chat chi tiết đang mở và đang chat với đúng user
+            if (
+                chatDetailModal.style.display !== "none" && currentChatUserId &&
+                (
+                    (savedMessage.senderId === currentChatUserId && savedMessage.receiverId === getCurrentUserId()) ||
+                    (savedMessage.senderId === getCurrentUserId() && savedMessage.receiverId === currentChatUserId)
+                )
+            ) {
                 const messageEl = document.createElement("div");
-                messageEl.className = "message-received";
-
-                const avatarEl = document.createElement("img");
-                avatarEl.src = chatHeaderAvatar.src || '/images/logo.jpg';
-                avatarEl.className = "message-avatar";
-                avatarEl.style.width = "25px";
-                avatarEl.style.height = "25px";
-                avatarEl.style.borderRadius = "50%";
-                avatarEl.style.marginRight = "10px";
-                messageEl.prepend(avatarEl);
-
-                const textEl = document.createElement("span");
-                textEl.textContent = savedMessage.content;
-                messageEl.appendChild(textEl);
-
+                if (savedMessage.senderId === userId) {
+                    messageEl.className = "message-sent";
+                    messageEl.innerHTML = `<span>${savedMessage.content}</span>`;
+                } else {
+                    messageEl.className = "message-received";
+                    messageEl.innerHTML = `<img src="${chatHeaderAvatar.src || '/images/logo.jpg'}" class="message-avatar" style="width:25px;height:25px;border-radius:50%;margin-right:10px;"> <span>${savedMessage.content}</span>`;
+                }
                 chatMessages.appendChild(messageEl);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
@@ -152,13 +147,11 @@ function openChatWithUser(userId, username, avatarUrl) {
         sendChatBtn.onclick = () => {
             const content = chatInput.value.trim();
             if (!content) return;
-
             const messageData = {
                 senderId: getCurrentUserId(),
-                receiverId: userId,
+                receiverId: currentChatUserId,
                 content: content
             };
-
             fetch("/v1/user/chat/send", {
                 method: "POST",
                 headers: {
@@ -169,11 +162,10 @@ function openChatWithUser(userId, username, avatarUrl) {
             })
                 .then(response => response.json())
                 .then(savedMessage => {
+                    // Hiển thị tin nhắn vừa gửi ngay lập tức
                     const messageEl = document.createElement("div");
                     messageEl.className = "message-sent";
-                    const textEl = document.createElement("span");
-                    textEl.textContent = savedMessage.content;
-                    messageEl.appendChild(textEl);
+                    messageEl.innerHTML = `<span>${savedMessage.content}</span>`;
                     chatMessages.appendChild(messageEl);
                     chatMessages.scrollTop = chatMessages.scrollHeight;
                     chatInput.value = "";
@@ -273,11 +265,9 @@ function sendMessage() {
             alert("Không thể gửi tin nhắn. Vui lòng thử lại!");
             console.error("Lỗi gửi tin nhắn:", err);
         });
-}
+}f
 
 // Lấy ID người dùng hiện tại
 function getCurrentUserId() {
     return parseInt(localStorage.getItem("userId"));
 }
-
-
