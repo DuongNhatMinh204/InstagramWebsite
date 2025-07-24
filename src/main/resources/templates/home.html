@@ -1,3 +1,557 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="vi">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8" />-->
+<!--    <title>Trang Chủ - Instagram Clone</title>-->
+<!--    <link rel="stylesheet" href="/css/home.css">-->
+<!--    <style>-->
+<!--        .modal {-->
+<!--            display: none;-->
+<!--            background-color: rgba(0, 0, 0, 0.5);-->
+<!--            z-index: 1000;-->
+<!--        }-->
+<!--        .modal-content {-->
+<!--            background-color: #fff;-->
+<!--            padding: 20px;-->
+<!--            border-radius: 10px;-->
+<!--            width: 80%;-->
+<!--            max-width: 600px;-->
+<!--            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);-->
+<!--        }-->
+<!--        .close {-->
+<!--            position: absolute;-->
+<!--            top: 10px;-->
+<!--            right: 10px;-->
+<!--            font-size: 20px;-->
+<!--            cursor: pointer;-->
+<!--            color: #666;-->
+<!--        }-->
+<!--        .chat-item {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            padding: 12px;-->
+<!--            cursor: pointer;-->
+<!--            border-bottom: 1px solid #f0f0f0;-->
+<!--        }-->
+<!--        .chat-item:hover {-->
+<!--            background-color: #f9fafb;-->
+<!--        }-->
+<!--        .chat-item .avatar {-->
+<!--            width: 40px;-->
+<!--            height: 40px;-->
+<!--            border-radius: 50%;-->
+<!--            margin-right: 12px;-->
+<!--        }-->
+<!--        .chat-item div {-->
+<!--            line-height: 1.4;-->
+<!--        }-->
+<!--        .search-box {-->
+<!--            width: 100%;-->
+<!--            padding: 10px;-->
+<!--            margin-bottom: 15px;-->
+<!--            border: 1px solid #f0f0f0;-->
+<!--            border-radius: 8px;-->
+<!--            outline: none;-->
+<!--            font-size: 14px;-->
+<!--        }-->
+<!--        .nav-bar {-->
+<!--            position: fixed;-->
+<!--            top: 0;-->
+<!--            width: 100%;-->
+<!--            height: 64px;-->
+<!--            background: white;-->
+<!--            border-bottom: 1px solid #e5e7eb;-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            align-items: center;-->
+<!--            padding: 0 28px;-->
+<!--            z-index: 1000;-->
+<!--            box-shadow: 0 1px 4px rgba(0,0,0,0.06);-->
+<!--        }-->
+<!--        .nav-items {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 16px;-->
+<!--            position: relative; /* Để định vị chatModal dựa vào đây */-->
+<!--        }-->
+<!--        #openModalBtn {-->
+<!--            background: none;-->
+<!--            border: none;-->
+<!--            cursor: pointer;-->
+<!--            font-size: 16px;-->
+<!--        }-->
+<!--        /* Thêm style mới cho chatModal */-->
+<!--        #chatModal.chat-modal {-->
+<!--            display: none;-->
+<!--            position: fixed;-->
+<!--            bottom: 0;-->
+<!--            right: 20px;-->
+<!--            width: 340px;-->
+<!--            height: 400px;-->
+<!--            background-color: #fff;-->
+<!--            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);-->
+<!--            border-radius: 8px 8px 0 0;-->
+<!--            z-index: 1050;-->
+<!--            transform: translateY(100%);-->
+<!--            transition: transform 0.3s ease-in-out;-->
+<!--        }-->
+<!--        #chatModal.chat-modal.show {-->
+<!--            display: block;-->
+<!--            transform: translateY(0);-->
+<!--        }-->
+<!--        #chatModal.chat-modal .modal-content {-->
+<!--            padding: 10px;-->
+<!--            max-height: 100%;-->
+<!--            overflow-y: auto;-->
+<!--            border-radius: 8px 8px 0 0;-->
+<!--            box-shadow: none;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--&lt;!&ndash; Navigation &ndash;&gt;-->
+<!--<nav class="nav-bar">-->
+<!--    <h1>Instagram</h1>-->
+<!--    <div class="search-container">-->
+<!--        <input type="text" id="searchInput" class="search-input" placeholder="Tìm kiếm người dùng..." autocomplete="off">-->
+<!--        <button id="searchButton" class="search-button">🔍</button>-->
+<!--    </div>-->
+<!--    <div class="nav-items">-->
+<!--        <span>🏠 Home</span>-->
+<!--        <button id="openModalBtn" class="chat-trigger">💬 Messages</button>-->
+<!--        <div id="chatModal" class="modal chat-modal">-->
+<!--            <div class="modal-content">-->
+<!--                <span class="close">×</span>-->
+<!--                <h3 style="margin: 0 0 15px 0; font-size: 18px;">Đoạn chat</h3>-->
+<!--                <input type="text" placeholder="Tìm kiếm trên Messenger..." class="search-box">-->
+<!--                <div class="chat-list" id="chatList"></div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div id="authNavButton" class="profile-dropdown-container"></div>-->
+<!--    </div>-->
+<!--</nav>-->
+<!--&lt;!&ndash; Modal hiển thị chi tiết đoạn chat với 1 người &ndash;&gt;-->
+<!--<div id="chatDetailModal" class="chat-detail-modal">-->
+<!--    <div class="modal-content">-->
+<!--        <span class="closeDetail">×</span>-->
+<!--        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">-->
+<!--            <img id="chatHeaderAvatar" src="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;" alt="">-->
+<!--            <h3 style="margin:0; font-size: 16px;"><span id="chatWithName"></span></h3>-->
+<!--        </div>-->
+<!--        <div id="chatMessages" style="height: 350px; overflow-y: scroll; padding: 10px 0;"></div>-->
+<!--        <input type="text" id="chatInput" placeholder="Nhập tin nhắn..." style="width: 70%; padding: 8px; border: 1px solid #f0f0f0; border-radius: 8px; margin-top: 10px;">-->
+<!--        <button id="sendChatBtn" style="padding: 8px 15px; background-color: #0095f6; color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px;">Gửi</button>-->
+<!--    </div>-->
+<!--</div>-->
+<!--&lt;!&ndash; Profile Modal &ndash;&gt;-->
+<!--<div id="profileModal" class="modal">-->
+<!--    <div class="modal-content profile-modal-content">-->
+<!--        <span class="closeProfile">×</span>-->
+<!--        <div class="profile-header">-->
+<!--            <button id="viewProfileBtn">Xem tất cả trang cá nhân</button>-->
+<!--        </div>-->
+<!--        <hr />-->
+<!--        <div class="profile-options">-->
+<!--            <div class="option">⚙️ Cài đặt & quyền riêng tư</div>-->
+<!--            <div class="option">❓ Trợ giúp và hỗ trợ</div>-->
+<!--            <div class="option">🌙 Màn hình & trợ năng</div>-->
+<!--            <div class="option">💬 Đóng góp ý kiến</div>-->
+<!--            <div class="option" id="logoutBtn">🚪 Đăng xuất</div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div class="main-container" style="display: block; margin-top: 85px; padding: 20px;">-->
+<!--    <div class="posts-feed">-->
+<!--        <div class="post-card">-->
+<!--            <form id="postForm">-->
+<!--                <div class="post-header">-->
+<!--                    <img id="currentUserAvatar" src="" class="post-avatar" alt="Avatar">-->
+<!--                    <label for="content"></label><textarea id="content" placeholder="What's on your mind?" style="width:100%; resize: none;"></textarea>-->
+<!--                </div>-->
+<!--                <input type="file" id="imgFile" accept="image/*">-->
+<!--                <img id="previewImage" src="" alt="Xem trước ảnh" style="max-width:100%; margin-top: 10px; border-radius: 8px; display: none;" />-->
+<!--                <button type="submit">Đăng Bài</button>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--        <div id="postsContainer">-->
+<!--            &lt;!&ndash; Thêm nội dung giả lập để kiểm tra cuộn &ndash;&gt;-->
+<!--            <div class="post-card" style="height: 600px; background: #f0f0f0; margin-top: 20px;">Post 1</div>-->
+<!--            <div class="post-card" style="height: 600px; background: #e0e0e0; margin-top: 20px;">Post 2</div>-->
+<!--            <div class="post-card" style="height: 600px; background: #d0d0d0; margin-top: 20px;">Post 3</div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--<div class="contacts-list">-->
+<!--    <h3 style="margin-top:0;">Người liên hệ</h3>-->
+<!--    <div id="followingsList">-->
+<!--        <div style="color:#888;">Đang tải...</div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Thêm thư viện sockjs-client và stompjs &ndash;&gt;-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>-->
+<!--<script src="/js/home.js"></script>-->
+<!--<script src="/js/chat.js"></script>-->
+<!--<script src="/js/profile.js"></script>-->
+<!--<script src="/js/search.js"></script>-->
+<!--<script>-->
+<!--    // hiển thị ảnh trước khi upload-->
+<!--    document.getElementById("imgFile").addEventListener("change", function (event) {-->
+<!--        const file = event.target.files[0];-->
+<!--        const preview = document.getElementById("previewImage");-->
+
+<!--        if (file) {-->
+<!--            const reader = new FileReader();-->
+<!--            reader.onload = function (e) {-->
+<!--                preview.src = e.target.result;-->
+<!--                preview.style.display = "block";-->
+<!--            };-->
+<!--            reader.readAsDataURL(file);-->
+<!--        } else {-->
+<!--            preview.src = "";-->
+<!--            preview.style.display = "none";-->
+<!--        }-->
+<!--    });-->
+
+<!--    // Lấy avatar người dùng hiện tại và gán vào phần đăng bài-->
+<!--    const token = localStorage.getItem("token");-->
+<!--    if (token) {-->
+<!--        fetch("/v1/auth/info", {-->
+<!--            headers: { "Authorization": "Bearer " + token }-->
+<!--        })-->
+<!--            .then(res => res.json())-->
+<!--            .then(user => {-->
+<!--                document.getElementById("currentUserAvatar").src = user.avatarUrl || "/images/logo.jpg";-->
+<!--            });-->
+<!--    }-->
+
+<!--    function renderFollowings() {-->
+<!--        const token = localStorage.getItem("token");-->
+<!--        if (!token) return;-->
+<!--        fetch("/v1/profile/followings", {-->
+<!--            headers: { "Authorization": "Bearer " + token }-->
+<!--        })-->
+<!--            .then(res => res.json())-->
+<!--            .then(data => {-->
+<!--                const list = document.getElementById("followingsList");-->
+<!--                const users = data.data && data.data.data ? data.data.data : [];-->
+<!--                if (users.length === 0) {-->
+<!--                    list.innerHTML = '<div style="color:#888;">Bạn chưa follow ai.</div>';-->
+<!--                    return;-->
+<!--                }-->
+<!--                list.innerHTML = users.map(user => `-->
+<!--            <div class="contact-item" style="display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer;border-radius:6px;transition:background 0.2s;" onclick="openChatModalWith('${user.nickName}','${user.avatarUrl || '/images/logo.jpg'}','${user.id}')">-->
+<!--                <img src="${user.avatarUrl || '/images/logo.jpg'}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">-->
+<!--                <span style="font-weight:500;">${user.nickName}</span>-->
+<!--            </div>-->
+<!--        `).join('');-->
+<!--            });-->
+<!--    }-->
+<!--    renderFollowings();-->
+
+<!--    // Hàm mở modal chat với người được chọn-->
+<!--    window.openChatModalWith = function(nickName, avatarUrl, userId) {-->
+<!--        const chatDetailModal = document.getElementById('chatDetailModal');-->
+<!--        const chatWithName = document.getElementById('chatWithName');-->
+<!--        const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');-->
+<!--        const chatMessages = document.getElementById('chatMessages');-->
+<!--        const chatInput = document.getElementById('chatInput');-->
+<!--        const sendChatBtn = document.getElementById('sendChatBtn');-->
+
+<!--        // Hiển thị modal chi tiết-->
+<!--        chatDetailModal.style.display = 'block';-->
+
+<!--        // Cập nhật thông tin người dùng-->
+<!--        chatWithName.textContent = nickName;-->
+<!--        chatHeaderAvatar.src = avatarUrl || '/images/logo.jpg';-->
+
+<!--        // Lấy lịch sử tin nhắn-->
+<!--        fetch(`/v1/user/chat/history?user2Id=${userId}`, {-->
+<!--            headers: { "Authorization": "Bearer " + localStorage.getItem("token") }-->
+<!--        })-->
+<!--            .then(response => response.json())-->
+<!--            .then(data => {-->
+<!--                chatMessages.innerHTML = "";-->
+<!--                data.forEach(msg => {-->
+<!--                    const messageEl = document.createElement("div");-->
+<!--                    messageEl.className = msg.senderId == getCurrentUserId() ? "message-sent" : "message-received";-->
+
+<!--                    if (msg.senderId !== getCurrentUserId()) {-->
+<!--                        const avatarEl = document.createElement("img");-->
+<!--                        avatarEl.src = avatarUrl || '/images/logo.jpg';-->
+<!--                        avatarEl.className = "message-avatar";-->
+<!--                        avatarEl.style.width = "25px";-->
+<!--                        avatarEl.style.height = "25px";-->
+<!--                        avatarEl.style.borderRadius = "50%";-->
+<!--                        avatarEl.style.marginRight = "10px";-->
+<!--                        messageEl.prepend(avatarEl);-->
+<!--                    }-->
+
+<!--                    const textEl = document.createElement("span");-->
+<!--                    textEl.textContent = msg.content;-->
+<!--                    messageEl.appendChild(textEl);-->
+
+<!--                    chatMessages.appendChild(messageEl);-->
+<!--                });-->
+<!--                chatMessages.scrollTop = chatMessages.scrollHeight;-->
+<!--            })-->
+<!--            .catch(err => {-->
+<!--                chatMessages.innerHTML = "<p>Không thể tải tin nhắn.</p>";-->
+<!--                console.error("Lỗi khi lấy lịch sử tin nhắn:", err);-->
+<!--            });-->
+
+<!--        // Xử lý sự kiện gửi tin nhắn-->
+<!--        if (sendChatBtn) {-->
+<!--            sendChatBtn.onclick = () => {-->
+<!--                const content = chatInput.value.trim();-->
+<!--                if (!content) return;-->
+
+<!--                const messageData = {-->
+<!--                    senderId: getCurrentUserId(),-->
+<!--                    receiverId: userId,-->
+<!--                    content: content-->
+<!--                };-->
+
+<!--                fetch("/v1/user/chat/send", {-->
+<!--                    method: "POST",-->
+<!--                    headers: {-->
+<!--                        "Content-Type": "application/json",-->
+<!--                        "Authorization": "Bearer " + localStorage.getItem("token")-->
+<!--                    },-->
+<!--                    body: JSON.stringify(messageData)-->
+<!--                })-->
+<!--                    .then(response => response.json())-->
+<!--                    .then(savedMessage => {-->
+<!--                        const messageEl = document.createElement("div");-->
+<!--                        messageEl.className = "message-sent";-->
+<!--                        const textEl = document.createElement("span");-->
+<!--                        textEl.textContent = savedMessage.content;-->
+<!--                        messageEl.appendChild(textEl);-->
+<!--                        chatMessages.appendChild(messageEl);-->
+<!--                        chatMessages.scrollTop = chatMessages.scrollHeight;-->
+<!--                        chatInput.value = "";-->
+<!--                    })-->
+<!--                    .catch(err => {-->
+<!--                        console.error("Lỗi khi gửi tin nhắn:", err);-->
+<!--                        alert("Không thể gửi tin nhắn. Vui lòng thử lại!");-->
+<!--                    });-->
+<!--            };-->
+<!--        }-->
+
+<!--        // Đóng modal khi nhấp vào nút close-->
+<!--        const closeDetailSpan = document.querySelector('#chatDetailModal .closeDetail');-->
+<!--        if (closeDetailSpan) {-->
+<!--            closeDetailSpan.onclick = () => {-->
+<!--                chatDetailModal.style.display = 'none';-->
+<!--            };-->
+<!--        }-->
+
+<!--        // Đóng modal khi nhấp ra ngoài-->
+<!--        window.onclick = function(event) {-->
+<!--            if (event.target === chatDetailModal) {-->
+<!--                chatDetailModal.style.display = 'none';-->
+<!--            }-->
+<!--        };-->
+<!--    };-->
+
+<!--    // Thêm đoạn mã này vào cuối thẻ <script> trong home.html-->
+<!--    document.addEventListener('DOMContentLoaded', function() {-->
+<!--        const logoutBtn = document.getElementById('logoutBtn');-->
+
+<!--        if (logoutBtn) {-->
+<!--            logoutBtn.addEventListener('click', function() {-->
+<!--                localStorage.removeItem('token');-->
+<!--                localStorage.removeItem('userId');-->
+<!--                window.location.href = '/login';-->
+<!--            });-->
+<!--        }-->
+
+<!--        // Logic kiểm tra đăng nhập và hiển thị nút-->
+<!--        const authNavButtonContainer = document.getElementById('authNavButton');-->
+<!--        const token = localStorage.getItem('token');-->
+
+<!--        if (token) {-->
+<!--            authNavButtonContainer.innerHTML = `-->
+<!--            <button id="openProfileDropdown">👤 Profile</button>-->
+<!--            <div id="profileDropdownMenu" class="profile-dropdown-menu">-->
+<!--                <div class="dropdown-item" id="viewProfileBtn"><i class="bi bi-person-circle"></i> Xem tất cả trang cá nhân</div>-->
+<!--                <hr />-->
+<!--                <div class="dropdown-item"><i class="bi bi-gear-fill"></i> Cài đặt & quyền riêng tư</div>-->
+<!--                <div class="dropdown-item"><i class="bi bi-question-circle-fill"></i> Trợ giúp và hỗ trợ</div>-->
+<!--                <div class="dropdown-item"><i class="bi bi-moon-fill"></i> Màn hình & trợ năng</div>-->
+<!--                <div class="dropdown-item"><i class="bi bi-chat-dots-fill"></i> Đóng góp ý kiến</div>-->
+<!--                <hr />-->
+<!--                <div class="dropdown-item" id="logoutBtn"><i class="bi bi-box-arrow-right"></i> Đăng xuất</div>-->
+<!--            </div>-->
+<!--        `;-->
+
+<!--            const openProfileDropdownBtn = document.getElementById('openProfileDropdown');-->
+<!--            const profileDropdownMenu = document.getElementById('profileDropdownMenu');-->
+<!--            const logoutBtn = document.getElementById('logoutBtn');-->
+<!--            const viewProfileBtnDropdown = document.getElementById('viewProfileBtn');-->
+
+<!--            openProfileDropdownBtn.addEventListener('click', function(event) {-->
+<!--                event.stopPropagation();-->
+<!--                profileDropdownMenu.classList.toggle('show');-->
+<!--            });-->
+
+<!--            document.addEventListener('click', function(event) {-->
+<!--                if (!authNavButtonContainer.contains(event.target)) {-->
+<!--                    profileDropdownMenu.classList.remove('show');-->
+<!--                }-->
+<!--            });-->
+
+<!--            if (logoutBtn) {-->
+<!--                logoutBtn.addEventListener('click', function() {-->
+<!--                    localStorage.removeItem('token');-->
+<!--                    localStorage.removeItem('userId');-->
+<!--                    window.location.href = '/login';-->
+<!--                });-->
+<!--            }-->
+
+<!--            if (viewProfileBtnDropdown) {-->
+<!--                viewProfileBtnDropdown.addEventListener('click', function() {-->
+<!--                    const currentUserId = localStorage.getItem('userId');-->
+<!--                    if (currentUserId) {-->
+<!--                        window.location.href = `/profile?userId=${currentUserId}`;-->
+<!--                    } else {-->
+<!--                        alert('Không tìm thấy thông tin người dùng.');-->
+<!--                    }-->
+<!--                    profileDropdownMenu.classList.remove('show');-->
+<!--                });-->
+<!--            }-->
+<!--        } else {-->
+<!--            authNavButtonContainer.innerHTML = '<a href="/login" class="nav-item-link">🔓 Login</a>';-->
+<!--        }-->
+
+<!--        // hiển thị ảnh trước khi upload-->
+<!--        document.getElementById("imgFile").addEventListener("change", function (event) {-->
+<!--            const file = event.target.files[0];-->
+<!--            const preview = document.getElementById("previewImage");-->
+
+<!--            if (file) {-->
+<!--                const reader = new FileReader();-->
+<!--                reader.onload = function (e) {-->
+<!--                    preview.src = e.target.result;-->
+<!--                    preview.style.display = "block";-->
+<!--                };-->
+<!--                reader.readAsDataURL(file);-->
+<!--            } else {-->
+<!--                preview.src = "";-->
+<!--                preview.style.display = "none";-->
+<!--            }-->
+<!--        });-->
+
+<!--        // Lấy avatar người dùng hiện tại và gán vào phần đăng bài (chỉ khi có token)-->
+<!--        if (token) {-->
+<!--            fetch("/v1/auth/info", {-->
+<!--                headers: { "Authorization": "Bearer " + token }-->
+<!--            })-->
+<!--                .then(res => res.json())-->
+<!--                .then(user => {-->
+<!--                    document.getElementById("currentUserAvatar").src = user.avatarUrl || "/images/logo.jpg";-->
+<!--                })-->
+<!--                .catch(error => {-->
+<!--                    console.error("Error fetching user info:", error);-->
+<!--                });-->
+<!--        } else {-->
+<!--            const postForm = document.getElementById("postForm");-->
+<!--            if (postForm) {-->
+<!--                postForm.style.display = 'none';-->
+<!--            }-->
+<!--            const currentUserAvatar = document.getElementById("currentUserAvatar");-->
+<!--            if (currentUserAvatar) {-->
+<!--                currentUserAvatar.src = "/images/logo.jpg";-->
+<!--            }-->
+<!--        }-->
+
+<!--        function renderFollowings() {-->
+<!--            const token = localStorage.getItem("token");-->
+<!--            if (!token) {-->
+<!--                const list = document.getElementById("followingsList");-->
+<!--                if (list) list.innerHTML = '<div style="color:#888;">Bạn cần đăng nhập để xem người liên hệ.</div>';-->
+<!--                return;-->
+<!--            }-->
+<!--            fetch("/v1/profile/followings", {-->
+<!--                headers: { "Authorization": "Bearer " + token }-->
+<!--            })-->
+<!--                .then(res => {-->
+<!--                    if (!res.ok) {-->
+<!--                        if (res.status === 401 || res.status === 403) {-->
+<!--                            localStorage.removeItem('token');-->
+<!--                            localStorage.removeItem('userId');-->
+<!--                            alert('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.');-->
+<!--                            window.location.href = '/login';-->
+<!--                        }-->
+<!--                        throw new Error('Failed to fetch followings');-->
+<!--                    }-->
+<!--                    return res.json();-->
+<!--                })-->
+<!--                .then(data => {-->
+<!--                    const list = document.getElementById("followingsList");-->
+<!--                    const users = data.data && data.data.data ? data.data.data : [];-->
+<!--                    if (users.length === 0) {-->
+<!--                        list.innerHTML = '<div style="color:#888;">Bạn chưa follow ai.</div>';-->
+<!--                        return;-->
+<!--                    }-->
+<!--                    list.innerHTML = users.map(user => `-->
+<!--                <div class="contact-item" style="display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer;border-radius:6px;transition:background 0.2s;" onclick="openChatModalWith('${user.nickName}','${user.avatarUrl || '/images/logo.jpg'}','${user.id}')">-->
+<!--                    <img src="${user.avatarUrl || '/images/logo.jpg'}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">-->
+<!--                    <span style="font-weight:500;">${user.nickName}</span>-->
+<!--                </div>-->
+<!--            `).join('');-->
+<!--                })-->
+<!--                .catch(error => {-->
+<!--                    console.error("Error rendering followings:", error);-->
+<!--                    const list = document.getElementById("followingsList");-->
+<!--                    if (list) list.innerHTML = '<div style="color:#888;">Không thể tải danh sách người liên hệ.</div>';-->
+<!--                });-->
+<!--        }-->
+<!--        renderFollowings();-->
+
+<!--        // Logic mở/đóng modal Messages-->
+<!--        const openModalBtn = document.querySelector('.chat-trigger');-->
+<!--        const chatModal = document.getElementById('chatModal');-->
+<!--        const closeChatModalSpan = document.querySelector('#chatModal .close');-->
+<!--        const chatDetailModal = document.getElementById('chatDetailModal');-->
+<!--        const closeDetailSpan = document.querySelector('#chatDetailModal .closeDetail');-->
+
+<!--        if (openModalBtn) {-->
+<!--            openModalBtn.onclick = function(event) {-->
+<!--                event.preventDefault();-->
+<!--                chatModal.classList.add('show');-->
+<!--                if (window.fetchChatHistory) window.fetchChatHistory();-->
+<!--            };-->
+<!--        }-->
+<!--        if (closeChatModalSpan) {-->
+<!--            closeChatModalSpan.onclick = function() {-->
+<!--                chatModal.classList.remove('show');-->
+<!--            };-->
+<!--        }-->
+<!--        if (closeDetailSpan) {-->
+<!--            closeDetailSpan.onclick = function() {-->
+<!--                chatDetailModal.style.display = 'none';-->
+<!--                chatModal.classList.add('show');-->
+<!--            };-->
+<!--        }-->
+
+<!--        // `window.onclick` cho chatModal và chatDetailModal-->
+<!--        window.onclick = function(event) {-->
+<!--            if (event.target === chatModal) {-->
+<!--                chatModal.classList.remove('show');-->
+<!--            }-->
+<!--            if (event.target === chatDetailModal) {-->
+<!--                chatDetailModal.style.display = 'none';-->
+<!--                chatModal.classList.add('show');-->
+<!--            }-->
+<!--        };-->
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -8,8 +562,6 @@
         .modal {
             display: none;
             background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
             z-index: 1000;
         }
         .modal-content {
@@ -74,6 +626,7 @@
             display: flex;
             align-items: center;
             gap: 16px;
+            position: relative; /* Để định vị chatModal dựa vào đây */
         }
         #openModalBtn {
             background: none;
@@ -81,85 +634,31 @@
             cursor: pointer;
             font-size: 16px;
         }
-        /* Modal chat chi tiết cố định */
-        .chat-detail-modal {
+        /* Thêm style mới cho chatModal */
+        #chatModal.chat-modal {
             display: none;
-            position: fixed;
-            top: 80px; /* Dưới nav-bar */
-            right: 20px; /* Cố định ở góc phải */
-            width: 360px;
-            height: 400px;
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 10px 24px rgba(0,0,0,0.15);
-            z-index: 1060;
-            overflow-y: auto; /* Cho phép cuộn nội dung bên trong */
-        }
-        .chat-detail-modal .modal-content {
-            padding: 10px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-        .chat-detail-modal h3 {
-            margin: 0;
-            font-size: 16px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        .chat-detail-modal #chatMessages {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 10px 0;
-        }
-        .chat-detail-modal .message-sent,
-        .chat-detail-modal .message-received {
-            margin: 5px 0;
-            padding: 8px;
-            border-radius: 15px;
-            max-width: 70%;
-        }
-        .chat-detail-modal .message-sent {
-            background-color: #0084ff;
-            color: white;
-            margin-left: auto;
-        }
-        .chat-detail-modal .message-received {
-            background-color: #f1f0f0;
-            color: black;
-            margin-right: auto;
-        }
-        .chat-detail-modal input {
-            width: calc(100% - 60px);
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            margin-right: 10px;
-        }
-        .chat-detail-modal button {
-            padding: 8px 15px;
-            background-color: #0084ff;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-        .chat-detail-modal .closeDetail {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            font-size: 20px;
+            top: 100%;
+            right: 0;
+            width: 340px;
+            height: 400px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 8px 8px 0 0;
+            z-index: 1050;
+            transform: translateY(10px);
+            transition: transform 0.3s ease-in-out;
         }
-        .chat-header-avatar {
-            vertical-align: middle;
+        #chatModal.chat-modal.show {
+            display: block;
+            transform: translateY(0);
         }
-        .message-received {
-            display: flex;
-            align-items: center;
-        }
-        .message-avatar {
-            flex-shrink: 0;
+        #chatModal.chat-modal .modal-content {
+            padding: 10px;
+            max-height: 100%;
+            overflow-y: auto;
+            border-radius: 8px 8px 0 0;
+            box-shadow: none;
         }
     </style>
 </head>
@@ -173,8 +672,8 @@
     </div>
     <div class="nav-items">
         <span>🏠 Home</span>
-        <button id="openModalBtn">💬 Messages</button>
-        <div id="chatModal" class="modal">
+        <button id="openModalBtn" class="chat-trigger">💬 Messages</button>
+        <div id="chatModal" class="modal chat-modal">
             <div class="modal-content">
                 <span class="close">×</span>
                 <h3 style="margin: 0 0 15px 0; font-size: 18px;">Đoạn chat</h3>
@@ -186,7 +685,7 @@
     </div>
 </nav>
 <!-- Modal hiển thị chi tiết đoạn chat với 1 người -->
-<div id="chatDetailModal" class="modal chat-detail-modal">
+<div id="chatDetailModal" class="chat-detail-modal">
     <div class="modal-content">
         <span class="closeDetail">×</span>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -216,8 +715,8 @@
     </div>
 </div>
 
-<div class="main-container" style="display: flex; justify-content: center; align-items: flex-start; margin-top: 85px; padding: 20px;">
-    <div class="posts-feed" style="margin-right: 32px;">
+<div class="main-container" style="display: block; margin-top: 85px; padding: 20px;">
+    <div class="posts-feed">
         <div class="post-card">
             <form id="postForm">
                 <div class="post-header">
@@ -236,11 +735,11 @@
             <div class="post-card" style="height: 600px; background: #d0d0d0; margin-top: 20px;">Post 3</div>
         </div>
     </div>
-    <div class="contacts-list" style="width: 280px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 16px; min-height: 500px;">
-        <h3 style="margin-top:0;">Người liên hệ</h3>
-        <div id="followingsList">
-            <div style="color:#888;">Đang tải...</div>
-        </div>
+</div>
+<div class="contacts-list">
+    <h3 style="margin-top:0;">Người liên hệ</h3>
+    <div id="followingsList">
+        <div style="color:#888;">Đang tải...</div>
     </div>
 </div>
 
@@ -567,38 +1066,39 @@
         renderFollowings();
 
         // Logic mở/đóng modal Messages
-        const openModalBtn = document.getElementById('openModalBtn');
+        const openModalBtn = document.querySelector('.chat-trigger');
         const chatModal = document.getElementById('chatModal');
         const closeChatModalSpan = document.querySelector('#chatModal .close');
         const chatDetailModal = document.getElementById('chatDetailModal');
         const closeDetailSpan = document.querySelector('#chatDetailModal .closeDetail');
 
         if (openModalBtn) {
-            openModalBtn.onclick = function() {
-                chatModal.style.display = 'block';
+            openModalBtn.onclick = function(event) {
+                event.preventDefault();
+                chatModal.classList.add('show');
                 if (window.fetchChatHistory) window.fetchChatHistory();
             };
         }
         if (closeChatModalSpan) {
             closeChatModalSpan.onclick = function() {
-                chatModal.style.display = 'none';
+                chatModal.classList.remove('show');
             };
         }
         if (closeDetailSpan) {
             closeDetailSpan.onclick = function() {
                 chatDetailModal.style.display = 'none';
-                chatModal.style.display = 'block';
+                chatModal.classList.add('show');
             };
         }
 
         // `window.onclick` cho chatModal và chatDetailModal
         window.onclick = function(event) {
             if (event.target === chatModal) {
-                chatModal.style.display = 'none';
+                chatModal.classList.remove('show');
             }
             if (event.target === chatDetailModal) {
                 chatDetailModal.style.display = 'none';
-                chatModal.style.display = 'block';
+                chatModal.classList.add('show');
             }
         };
     });
