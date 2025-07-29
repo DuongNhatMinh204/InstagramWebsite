@@ -20,7 +20,9 @@ function connectWebSocket() {
         console.error("Không thể lấy userId để kết nối WebSocket.");
         return;
     }
-
+    const headers = {
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+    };
     const socket = new SockJS("http://localhost:8080/ws");
     stompClient = Stomp.over(socket);
 
@@ -265,7 +267,7 @@ function sendMessage() {
             alert("Không thể gửi tin nhắn. Vui lòng thử lại!");
             console.error("Lỗi gửi tin nhắn:", err);
         });
-}f
+}
 
 // Lấy ID người dùng hiện tại
 function getCurrentUserId() {

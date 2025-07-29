@@ -1,29 +1,32 @@
 package com.nminh.websiteinstagram.controller;
 
-import com.nminh.websiteinstagram.Utils.SecurityUtil;
 import com.nminh.websiteinstagram.constant.Constants;
 import com.nminh.websiteinstagram.entity.User;
 import com.nminh.websiteinstagram.model.request.UserLoginDTO;
 import com.nminh.websiteinstagram.model.request.UserRegisterDTO;
 import com.nminh.websiteinstagram.model.response.ApiResponse;
 import com.nminh.websiteinstagram.model.response.JwtResponse;
+import com.nminh.websiteinstagram.model.response.ProfileDTO;
 import com.nminh.websiteinstagram.model.response.UserLoginResponseDTO;
 import com.nminh.websiteinstagram.security.CustomUserDetails;
 import com.nminh.websiteinstagram.security.CustomUserDetailsService;
 import com.nminh.websiteinstagram.security.JWTService;
+import com.nminh.websiteinstagram.service.PostService;
 import com.nminh.websiteinstagram.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/auth")
@@ -35,6 +38,7 @@ public class UserController {
 
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
+    private final PostService postService;
     private final JWTService jwtService;
 
     @PostMapping("/register")
@@ -79,6 +83,28 @@ public class UserController {
     @GetMapping("/info")
     public ResponseEntity<?> getUserInfo() {
         return userService.getInfo() ;
+    }
+
+
+//    @GetMapping("/user/by-post/{postid}")
+//    public ResponseEntity<?> getUserInfoByPostId(@PathVariable("postid") Long postid) {
+//        User userByPostId=postService.getUserBypostID(postid);
+//        log.info("getUserInfoByPostId: {}", userByPostId);
+//        return ResponseEntity.ok(userByPostId);
+//    }
+    /**
+     * api lấy userId theo postId
+     * @param userId
+     * @return
+     */
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getUserById(@PathVariable Long userId) {
+        ProfileDTO user = userService.findUserById(userId);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        return ResponseEntity.ok(user);
     }
 
 }

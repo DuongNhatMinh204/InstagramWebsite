@@ -7,17 +7,22 @@ import com.nminh.websiteinstagram.entity.User;
 import com.nminh.websiteinstagram.enums.ErrorCode;
 import com.nminh.websiteinstagram.exception.AppException;
 import com.nminh.websiteinstagram.mapper.PostMapper;
+import com.nminh.websiteinstagram.mapper.UserMapper;
 import com.nminh.websiteinstagram.model.request.PostCreateDTO;
 import com.nminh.websiteinstagram.model.response.PostResponseDTO;
 import com.nminh.websiteinstagram.repository.PostRepository;
 import com.nminh.websiteinstagram.repository.UserRepository;
 import com.nminh.websiteinstagram.service.PostService;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @Service
 public class PostServiceImpl implements PostService {
 
@@ -27,6 +32,9 @@ public class PostServiceImpl implements PostService {
     private UserRepository userRepository;
     @Autowired
     private PostMapper postMapper;
+    @Autowired
+    private UserMapper userMapper;
+
 
     @Override
     public PostResponseDTO createPost( PostCreateDTO postCreateDTO) {
@@ -55,10 +63,11 @@ public class PostServiceImpl implements PostService {
         for(Post post : user.getPosts()){
             post.setTotalLikes(post.getLikes().size()); // đếm số lượng like của bài viết
             PostResponseDTO postResponseDTO = postMapper.toPostResponseDTO(post);
-            postResponseDTO.setUrl_avatar(user.getAvatarUrl()); // avt nguoi dang
+            postResponseDTO.setUrl_avatar(user.getAvatarUrl()!= null ? user.getAvatarUrl() : "/images/default-avatar.png"); // avt nguoi dang
             postResponseDTO.setNickname(user.getNickName());
             postResponseDTO.setImageUrl(post.getImageUrl());
             postResponseDTO.setCreatedAt(String.valueOf(post.getCreated()));
+            postResponseDTO.setUserId(user.getId());
             postResponseDTOS.add(postResponseDTO);
         }
         // lấy danh sách người mình follow
@@ -81,10 +90,45 @@ public class PostServiceImpl implements PostService {
                 postResponseDTO.setNickname(userFollowed.getNickName());
                 postResponseDTO.setImageUrl(post.getImageUrl());
                 postResponseDTO.setCreatedAt(String.valueOf(post.getCreated()));
+                postResponseDTO.setUserId(userFollowed.getId());
                 postResponseDTOS.add(postResponseDTO);
             }
         }
 
         return postResponseDTOS;
+    }
+
+
+
+    @Override
+    public PostResponseDTO getPostById(long id) {
+        Optional<Post> postById =postRepository.findById(id);
+        log.info("postById : {}", postById);
+        PostResponseDTO postResponseDTO = postMapper.toPostResponseDTO(postById.get());
+        postResponseDTO.setUserId(postById.get().getUser().getId());
+        postResponseDTO.setUrl_avatar(postById.get().getUser().getAvatarUrl());
+        postResponseDTO.setNickname(postById.get().getUser().getNickName());
+        return postResponseDTO;
+    }
+
+//    @Override
+//    public User getUserBypostID(Long postId) {
+//        return postRepository.findByIdFetchUser(postId)      // đã JOIN FETCH User
+//                .map(Post::getUser)             // lấy ra User
+//                .orElseThrow(() ->
+//                        new EntityNotFoundException(
+//                                "Post không tồn tại, id = " + postId));
+//    }
+
+    @Override
+    public List<PostResponseDTO> getAllPostByUserId(Long userId) {
+        Optional<User> userIdForPost = userRepository.findById(userId);
+        log.info("userIdForPost : {}", userIdForPost);
+        Long id = userIdForPost.get().getId();
+        List<Post> postResponseDTOS = postRepository.findByUserId(id);
+        log.info("postResponseDTOS : {}", postResponseDTOS);
+        List<PostResponseDTO> postResponseDTO = postMapper.toPostResponseDTO(postResponseDTOS);
+
+        return postResponseDTO;
     }
 }

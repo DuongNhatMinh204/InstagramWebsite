@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
-                .addResourceHandler("/images/**") // Định nghĩa URL pattern để truy cập tài nguyên
+                .addResourceHandler("/images/**","/default-avatar.png") // Định nghĩa URL pattern để truy cập tài nguyên
                 .addResourceLocations("file:uploads/"); // Đường dẫn vật lý đến thư mục chứa file
     }
 }

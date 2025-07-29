@@ -93,10 +93,10 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(user => {
             const profileAvatar = document.getElementById("profile-avatar");
-            if (profileAvatar) profileAvatar.src = user.avatarUrl || "https://via.placeholder.com/168";
+            if (profileAvatar) profileAvatar.src = user.avatarUrl || "";
 
             const smallAvatar = document.getElementById("small-avatar");
-            if (smallAvatar) smallAvatar.src = user.avatarUrl || "https://via.placeholder.com/40";
+            if (smallAvatar) smallAvatar.src = user.avatarUrl || "";
 
             const nickname = document.getElementById("nickname");
             if (nickname) nickname.innerText = user.nickName || "Không tên";
@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
             postsContainer.innerHTML = posts.map(post => `
             <div class="bg-white rounded-lg shadow-md p-4 mb-4">
                 <div class="flex items-center mb-3">
-                    <img src="${post.url_avatar || 'https://via.placeholder.com/40'}" alt="Avatar" class="w-10 h-10 rounded-full mr-3 object-cover bg-gray-300">
+                    <img src="${post.url_avatar || 'http://localhost:8080/images/default-avatar.png'}" alt="Avatar" class="w-10 h-10 rounded-full mr-3 object-cover bg-gray-300">
                     <div class="flex-1">
                         <div class="font-semibold">${post.nickname || 'Không tên'}</div>
                         <div class="text-sm text-gray-500">2 giờ trước · <i class="fas fa-globe-americas"></i></div>
@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="font-semibold mb-2 text-gray-600">${post.comments.length} bình luận</div>
                     ${post.comments.map(comment => `
                         <div class="flex mb-3">
-                            <img src="${comment.avatarUrl || 'https://via.placeholder.com/32'}" class="w-8 h-8 rounded-full mr-2" alt="">
+                            <img src="${comment.avatarUrl || 'http://localhost:8080/images/default-avatar.png'}" class="w-8 h-8 rounded-full mr-2" alt="">
                             <div class="bg-gray-200 p-2 rounded-lg flex-1">
                                 <div class="font-semibold text-sm">${comment.nickName || 'Không tên'}</div>
                                 <div class="text-sm">${comment.content || ''}</div>
@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     `).join('')}
                     <div class="flex mt-3">
-                        <img src="${document.getElementById('profile-avatar') ? document.getElementById('profile-avatar').src : 'https://via.placeholder.com/32'}" class="w-8 h-8 rounded-full mr-2">
+                        <img src="${document.getElementById('profile-avatar') ? document.getElementById('profile-avatar').src : 'http://localhost:8080/images/default-avatar.png'}" class="w-8 h-8 rounded-full mr-2">
                         <input type="text" placeholder="Viết bình luận..." class="flex-1 bg-gray-200 border border-gray-300 rounded-full py-2 px-4 outline-none">
                     </div>
                 </div>

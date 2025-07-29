@@ -49,6 +49,22 @@ public class JWTService {
         return username.equals(userDetails.getUsername()) ;
     }
 
+    // kiểm tra token hợp lệ mà không cần UserDetails
+    public boolean validateToken(String token) {
+        try {
+            extractAllClaims(token);
+            return !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // lấy UserDetails từ username
+    public UserDetails loadUserByUsername(String username) {
+        JWTService userDetailsService = null;
+        return userDetailsService.loadUserByUsername(username);
+    }
+
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }

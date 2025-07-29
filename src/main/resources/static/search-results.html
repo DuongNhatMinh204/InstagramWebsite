@@ -562,16 +562,32 @@
 
                 Promise.all(promises).then(updatedUsers => {
                     userList.innerHTML = updatedUsers.map(user => `
-                            <li class="user-item" data-user-id="${user.id}">
-                                <img src="${user.avatar_url || '/images/logo.jpg'}" alt="${user.nickname}">
-                                <span>${user.nickname}</span>
-                                <button class="action-btn ${user.isFollowing ? 'unfollow-btn' : 'follow-btn'}"
-                                        data-user-id="${user.id}"
-                                        data-is-following="${user.isFollowing}">
-                                    ${user.isFollowing ? 'Unfollow' : 'Follow'}
-                                </button>
-                            </li>
-                        `).join('');
+                        <li class="user-item" data-user-id="${user.id}">
+                            <img src="${user.avatar_url || '/images/logo.jpg'}" alt="${user.nickname}">
+                            <span>${user.nickname}</span>
+                            <button class="action-btn ${user.isFollowing ? 'unfollow-btn' : 'follow-btn'}"
+                                    data-user-id="${user.id}"
+                                    data-is-following="${user.isFollowing}">
+                                ${user.isFollowing ? 'Unfollow' : 'Follow'}
+                            </button>
+                        </li>
+                    `).join('');
+
+                    document.querySelectorAll('.user-item').forEach(item => {
+                        item.addEventListener('click', function (event) {
+                            // Nếu click vào nút follow/unfollow thì không chuyển trang
+                            if (event.target.closest('.action-btn')) return;
+
+                            const userId = this.getAttribute('data-user-id');
+                            const currentUserId = localStorage.getItem('userId');
+
+                            if (userId === currentUserId) {
+                                window.location.href = `/profile`;
+                            } else {
+                                window.location.href = `/profile-user?userId=${userId}`;
+                            }
+                        });
+                    });
 
                     // Thêm event listener cho các nút sau khi tạo
                     document.querySelectorAll('.action-btn').forEach(btn => {
@@ -591,6 +607,25 @@
     } else {
         document.getElementById('userList').innerHTML = '<li style="padding: 10px; color: #888;">Không có từ khóa tìm kiếm.</li>';
     }
+
+    // Bắt sự kiện click vào user-item để đi đến profile của người đó
+    document.querySelectorAll('.user-item').forEach(item => {
+        item.addEventListener('click', function (event) {
+            const userId = this.getAttribute('data-user-id');
+
+            // Chỉ ngăn nếu click chính xác vào nút follow/unfollow
+            if (event.target.closest('.action-btn')) return;
+
+            // Cho phép click vào img, span, hoặc vùng còn lại
+            const currentUserId = localStorage.getItem('userId');
+            if (userId === currentUserId) {
+                window.location.href = `/profile`;
+            } else {
+                window.location.href = `/profile-user?userId=${userId}`;
+            }
+        });
+    });
+
 
     // Hàm cập nhật trạng thái sau khi follow/unfollow
     function updateFollowStatus(userId, currentStatus, response) {

@@ -41,4 +41,30 @@ public class PostController {
         return apiResponse;
     }
 
+    /**
+     * api ấy post theo id
+     * @param id
+     * @return
+     */
+    @GetMapping("/post/{id}")
+    public ApiResponse getPostById(@PathVariable Long id){
+        log.info("Get post from people you follow") ;
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setData(postService.getPostById(id));
+        return apiResponse;
+    }
+
+    /**
+     * api lấy danh sách post theo id
+     * @param userId
+     * @return
+     */
+    @GetMapping("/post-list/{userId}")
+    public ApiResponse getPostList(@RequestParam Long userId){
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setData(postService.getAllPostByUserId(userId));
+        log.info("get lít post by userId : {}", apiResponse);
+        return apiResponse;
+    }
+
 }

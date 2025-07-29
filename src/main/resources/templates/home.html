@@ -195,8 +195,10 @@
 <script src="/js/home.js"></script>
 <script src="/js/chat.js"></script>
 <script src="/js/profile.js"></script>
+<script src="/js/profile-user.js"></script>
 <script src="/js/search.js"></script>
 <script>
+
     // hiển thị ảnh trước khi upload
     document.getElementById("imgFile").addEventListener("change", function (event) {
         const file = event.target.files[0];
@@ -549,7 +551,7 @@
         };
 
         // Thêm kết nối WebSocket để nhận tin nhắn mới
-        const socket = new SockJS('http://localhost:8080/websocket'); // Thay bằng URL WebSocket của server
+        const socket = new SockJS('http://localhost:8080/ws'); // Thay bằng URL WebSocket của server
         const stompClient = Stomp.over(socket);
 
         stompClient.connect({}, function(frame) {

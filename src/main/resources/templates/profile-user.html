@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>Trang Cá Nhân Người Dùng - Instagram Clone</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body class="bg-gray-200 text-gray-800">
+<nav class="flex justify-between items-center bg-white shadow-md py-2 px-4 fixed top-0 left-0 right-0 z-50">
+    <h1 class="text-2xl font-bold text-red-600">Instagram</h1>
+    <div class="flex items-center space-x-4">
+        <a href="/home" class="text-lg">🏠 Home</a>
+        <button id="openModalBtn" class="text-lg">💬 Messages</button>
+        <div id="chatModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white p-6 rounded-lg shadow-xl w-96">
+                <span class="float-right text-2xl cursor-pointer" onclick="document.getElementById('chatModal').style.display='none'">×</span>
+                <h3 class="text-xl font-semibold mb-4">Đoạn chat</h3>
+                <input type="text" placeholder="Tìm kiếm trên Messenger..." class="w-full p-2 border border-gray-300 rounded-md mb-4">
+                <div class="h-64 overflow-y-auto" id="chatList">
+                </div>
+            </div>
+        </div>
+
+        <div id="authNavButton" class="relative">
+        </div>
+    </div>
+</nav>
+
+<div id="chatDetailModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-96">
+        <span class="float-right text-2xl cursor-pointer" onclick="document.getElementById('chatDetailModal').style.display='none'">×</span>
+        <div class="flex items-center gap-2 mb-2">
+            <img id="chatHeaderAvatar" src="" class="w-9 h-9 rounded-full object-cover" alt="">
+            <h3 class="text-lg font-semibold"><span id="chatWithName"></span></h3>
+        </div>
+        <div id="chatMessages" class="h-80 overflow-y-scroll border border-gray-300 p-2 rounded-md mb-2"></div>
+        <input type="text" id="chatInput" placeholder="Nhập tin nhắn..." class="w-full p-2 border border-gray-300 rounded-md mb-2">
+        <button id="sendChatBtn" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Gửi</button>
+    </div>
+</div>
+
+<div class="profile-container max-w-6xl mx-auto mt-14 px-4">
+    <div class="bg-white rounded-lg shadow-md mb-4">
+        <div class="h-80 bg-gradient-to-br from-blue-600 to-gray-600 rounded-t-lg relative ">
+        </div>
+
+        <div class="flex flex-col md:flex-row p-4 pt-0">
+            <div class="flex justify-center -mt-28 relative z-10">
+                <img id="profile-avatar"
+                     class="w-52 h-52 rounded-full border-4 border-white object-cover bg-gray-300"
+                     src=""
+                     alt="Avatar">
+            </div>
+
+            <div class="flex-1 p-4 md:ml-6 mt-4 md:mt-0">
+                <h2 class="text-3xl font-bold mb-2" id="nickname">Đang tải...</h2>
+                <div class="flex items-center space-x-2">
+                    <!-- Nút này sẽ được ẩn/hiện bởi profile.js -->
+                    <button id="editProfileButton" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md font-semibold hover:bg-gray-300" style="display:none;">
+                        <a href="/edit-profile" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md font-semibold hover:bg-gray-300">
+                            Chỉnh sửa trang cá nhân
+                        </a>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col md:flex-row gap-4">
+            <div class="md:w-1/3 space-y-4">
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <h3 class="text-xl font-bold mb-3">Giới thiệu</h3>
+                    <div class="flex items-center mb-3 text-gray-700">
+                        <i class="fas fa-user text-gray-600 mr-3"></i>
+                        <span id="fullNameDisplay"></span>
+                    </div>
+                    <div class="mb-3 text-gray-700">
+                        <div class="flex items-center">
+                            <i class="fas fa-birthday-cake text-gray-600 mr-3"></i>
+                            <span class="font-bold" >Sinh Nhật:</span>
+                        </div>
+                        <span id="birthdayDisplay"></span>
+                    </div>
+
+                    <div class="mb-3 text-gray-700">
+                        <div class="flex items-center">
+                            <i class="fas fa-home text-gray-600 mr-2"></i>
+                            <span class="font-bold" >Công tác tại:</span>
+                        </div>
+                        <span id="workplaceDisplay"></span>
+                    </div>
+                    <div class="mb-3 text-gray-700">
+                        <div class="flex items-center">
+                            <i class="fas fa-graduation-cap text-gray-600 mb-1"></i>
+                            <span class="font-bold">Học Vấn:</span>
+                        </div>
+                        <span id="educationDisplay"></span>
+                    </div>
+                    <div class="mb-3 text-gray-700">
+                        <div class="flex items-center">
+                            <i class="fas fa-home text-gray-600 mb-1"></i>
+                            <span  class="font-bold">Sống tại:</span>
+                        </div>
+                        <span id="addressDisplay"></span>
+                    </div>
+                    <div class="flex items-center mb-3 text-gray-700">
+                        <i class="fas fa-heart text-gray-600 mr-3"></i>
+                        <span id="maritalStatusDisplay"></span>
+                    </div>
+
+                    <!-- Nút này cũng sẽ được ẩn/hiện bởi profile.js -->
+                    <button class="w-full p-2 bg-gray-200 rounded-md mt-2 font-semibold hover:bg-gray-300" id="editProfileButtonBottom" style="display:none;">
+                        <a href="/edit-profile" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md font-semibold hover:bg-gray-300">
+                            Chỉnh sửa trang cá nhân
+                        </a>
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <h3 class="text-xl font-bold mb-3">Ảnh</h3>
+                    <div id="randomPhotosGrid" class="grid grid-cols-3 gap-2">
+                        <p class="text-gray-500 col-span-3 text-center">Đang tải ảnh ngẫu nhiên...</p>
+                    </div>
+                    <button class="w-full p-2 bg-gray-200 rounded-md mt-2 font-semibold hover:bg-gray-300">Xem tất cả ảnh</button>
+                </div>
+            </div>
+
+            <div class="md:w-2/3 space-y-4">
+                <h1 class="text-2xl font-bold">Bài Viết</h1>
+                <div id="postsContainer">
+                </div>
+            </div>
+
+            <div class="md:w-1/4 space-y-4 mt-6 md:mt-0">
+                <div class="bg-white rounded-lg shadow-md p-4 min-h-96">
+                    <h3 class="text-xl font-bold mb-3">Người liên hệ</h3>
+                    <div id="followingsList" class="space-y-2">
+                        <div class="text-gray-500">Đang tải...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="/js/home.js"></script>
+    <script src="/js/chat.js"></script>
+    <script src="/js/profile-user.js"></script>
+</body>
+</html>

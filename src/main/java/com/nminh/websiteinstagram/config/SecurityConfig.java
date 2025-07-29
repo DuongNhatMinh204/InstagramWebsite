@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/",
                                 "/favicon.ico",
+                                "/favicon-32x32.png",
                                 "/images/**",
                                 "/css/**",
                                 "/js/**",
@@ -61,6 +62,7 @@ public class SecurityConfig {
                                 "/*.png",
                                 "/api/auth/**",
                                 "/ws/**",
+                                "/websocket/**",
                                 "/v1/auth/**",
                                 "/api/images/upload",
                                 "/login",
@@ -74,7 +76,14 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/swagger-resources/**",
                                 "/webjars/**",
-                                "/search-results.html"
+                                "/search-results.html",
+                                "/site.webmanifest",
+                                "/apple-touch-icon.png",
+                                ",image/*,*/*",
+                                "/profile-user",
+                                "/default-avatar.png",
+                                "/uploads/images/logo.jpg",
+                                "/uploads"
                         ).permitAll()
                         .requestMatchers("/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/chat/**","/v1/user/chat/**","/v1/profile/**","/v1/user/unfollowing").hasAnyRole("USER", "ADMIN")

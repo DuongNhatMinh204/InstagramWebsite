@@ -7,6 +7,7 @@ import com.nminh.websiteinstagram.exception.AppException;
 import com.nminh.websiteinstagram.mapper.UserMapper;
 import com.nminh.websiteinstagram.model.request.UserLoginDTO;
 import com.nminh.websiteinstagram.model.request.UserRegisterDTO;
+import com.nminh.websiteinstagram.model.response.ProfileDTO;
 import com.nminh.websiteinstagram.repository.UserRepository;
 import com.nminh.websiteinstagram.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -65,4 +68,11 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTS)) ;
         return ResponseEntity.ok(user);
     }
+
+    @Override
+    public ProfileDTO findUserById(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        return optionalUser.map(userMapper::toUserprofileDTO).orElse(null);
+    }
+
 }

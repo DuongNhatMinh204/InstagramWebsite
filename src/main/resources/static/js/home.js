@@ -37,7 +37,7 @@ async function loadPosts() {
             "Authorization": "Bearer " + localStorage.getItem("token")
         }
     });
-
+    if (!res.ok) throw new Error("Không thể lấy danh sách bài đăng");
     const data = await res.json();
     let posts = data.data;
     posts = posts.sort((a, b) => new Date(b.created_at || b.createdAt) - new Date(a.created_at || a.createdAt));
@@ -75,9 +75,12 @@ async function loadPosts() {
 
         postEl.innerHTML = `
             <div class="post-header">
-                <img src="${post.url_avatar || 'default-avatar.png'}" class="post-avatar" />
+                <img src="${post.url_avatar || 'http://localhost:8080/images/default-avatar.png'}" class="post-avatar" />
                 <div style="display:flex;flex-direction:column;">
-                  <strong>${post.nickname}</strong>
+<!--                  <strong>${post.nickname}</strong>-->
+                 <a href="" class="nickname-link" data-user-id="${post.userId}" style="cursor: pointer; text-decoration: none; color: inherit;">
+                        <strong>${post.nickname}</strong>
+                    </a>
                   <span style="font-size:12px;color:#888;">${timeAgo}</span>
                 </div>
             </div>
@@ -103,6 +106,21 @@ async function loadPosts() {
 
         container.appendChild(postEl);
     }
+    const nicknameLinks = document.querySelectorAll('.nickname-link');
+    console.log('Found nickname links:', nicknameLinks.length);
+    nicknameLinks.forEach(link => {
+        console.log('Attaching click event to:', link);
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const userId = link.getAttribute('data-user-id');
+            console.log('Clicked nickname with userId:', userId);
+            if (typeof window.viewUserProfile === 'function') {
+                window.viewUserProfile(userId);
+            } else {
+                console.error('window.viewUserProfile is not a function');
+            }
+        });
+    });
 }
 
 
@@ -155,6 +173,9 @@ async function addComment(postId) {
     alert(result.data);
     input.value = "";
     loadPosts(); // Reload để hiển thị bình luận mới
+
+
 }
+
 
 loadPosts();

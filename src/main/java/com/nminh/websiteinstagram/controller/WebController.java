@@ -16,6 +16,9 @@ public class WebController {
     @GetMapping("/profile")
     public String profilePage() {return "profile";}
 
+    @GetMapping("/profile-user")
+    public String profileUserPage() {return "profile-user";}
+
     @GetMapping("/register")
     public String registerPage() {return "register";}
 
@@ -23,5 +26,6 @@ public class WebController {
     public String editProfilePage() {
         return "edit-profile"; // Nếu bạn dùng Thymeleaf hoặc template engine
     }
+
 
 }
