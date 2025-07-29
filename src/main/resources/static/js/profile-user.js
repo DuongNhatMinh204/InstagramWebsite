@@ -200,74 +200,131 @@ document.addEventListener('DOMContentLoaded', function() {
                     postsContainer.innerHTML = '<div class="bg-white rounded-lg shadow-md p-4 text-center text-gray-500">Chưa có bài viết nào.</div>';
                     return;
                 }
-                postsContainer.innerHTML = posts.map(post => {
-                    console.log("Post ID:", post.id, "User ID for post:", post.userId, "Nickname:", post.nickname); // LOGGING: Kiểm tra post.idUser
-                    return `
-                        <div class="bg-white rounded-lg shadow-md p-4 mb-4">
-                            <div class="flex items-center mb-3">
-                                <img src="${post.url_avatar || ''}" alt="Avatar" class="w-10 h-10 rounded-full mr-3 object-cover bg-gray-300">
-                                <div class="flex-1">
-                                   <a href="#" class="nickname-link" data-user-id="${post.userId}" style="cursor: pointer; text-decoration: none; color: inherit;">
-                                    <strong>${post.nickname}</strong>
-                                  </a>
-<!--                                    <div class="font-semibold" style="cursor: pointer;" onclick="viewUserProfile('${post.userId}')">${post.nickname || 'Không tên'}</div>-->
-                                    <div class="text-sm text-gray-500">2 giờ trước · <i class="fas fa-globe-americas"></i></div>
-                                </div>
-                                <i class="fas fa-ellipsis-h text-gray-500 cursor-pointer"></i>
-                            </div>
-                            <div class="mb-3 leading-relaxed">
-                                ${post.content || ''}
-                            </div>
-                            ${post.imageUrl ? `<img src="${post.imageUrl}" alt="Post Image" class="w-full max-h-96 object-contain rounded-lg bg-gray-100 mb-3">` : ''}
-                            <div class="flex justify-between border-b border-gray-200 pb-2 text-gray-600 text-sm">
-                                <div><i class="fas fa-thumbs-up text-blue-600 mr-1"></i> ${post.totalLikes || 0}</div>
-                                <div>${post.totalComments || 0} bình luận · 0 lượt chia sẻ</div>
-                            </div>
-                            <div class="flex justify-around py-2">
-                                <div class="flex items-center p-2 rounded-md cursor-pointer text-gray-600 font-semibold hover:bg-gray-100">
-                                    <i class="far fa-thumbs-up mr-2"></i>
-                                    <span>Thích</span>
-                                </div>
-                                <div class="flex items-center p-2 rounded-md cursor-pointer text-gray-600 font-semibold hover:bg-gray-100">
-                                    <i class="far fa-comment mr-2"></i>
-                                    <span>Bình luận</span>
-                                </div>
-                                <div class="flex items-center p-2 rounded-md cursor-pointer text-gray-600 font-semibold hover:bg-gray-100">
-                                    <i class="fas fa-share mr-2"></i>
-                                    <span>Chia sẻ</span>
-                                </div>
-                            </div>
-                            ${(post.comments && post.comments.length > 0) ? `
-                            <div class="bg-gray-100 rounded-b-lg p-4 -mx-4 -mb-4 mt-2">
-                                <div class="font-semibold mb-2 text-gray-600">${post.comments.length} bình luận</div>
-                                ${post.comments.map(comment => `
-                                    <div class="flex mb-3">
-                                        <img src="${comment.avatarUrl || ''}" class="w-8 h-8 rounded-full mr-2" alt="">
-                                        <div class="bg-gray-200 p-2 rounded-lg flex-1">
-                                            <div class="font-semibold text-sm">${comment.nickName || 'Không tên'}</div>
-                                            <div class="text-sm">${comment.content || ''}</div>
-                                            <div class="flex mt-1">
-                                                <span class="text-xs text-gray-500 mr-4">Thích</span>
-                                                <span class="text-xs text-gray-500">Phản hồi</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `).join('')}
-                                <div class="flex mt-3">
-                                    <img src="${document.getElementById('profile-avatar') ? document.getElementById('profile-avatar').src : 'http://localhost:8080/images/default-avatar.png'}" class="w-8 h-8 rounded-full mr-2">
-                                    <input type="text" placeholder="Viết bình luận..." class="flex-1 bg-gray-200 border border-gray-300 rounded-full py-2 px-4 outline-none">
-                                </div>
-                            </div>
-                            ` : ''}
-                        </div>
-                    `;
-                }).join('');
+                postsContainer.innerHTML = posts.map(post => `
+              <div class="bg-white rounded-lg shadow-md p-4 mb-6" id="post-${post.id}">
+                <div class="flex items-center mb-3">
+                  <img src="${post.url_avatar || '/images/default-avatar.png'}" class="w-10 h-10 rounded-full mr-3 object-cover bg-gray-300">
+                  <div>
+                    <div class="font-semibold">${post.nickname || 'Không tên'}</div>
+                    <div class="text-sm text-gray-500">2 giờ trước · <i class="fas fa-globe-americas"></i></div>
+                  </div>
+                </div>
+                
+                <div class="mb-3">${post.content || ''}</div>
+            
+                ${post.imageUrl ? `<img src="${post.imageUrl}" class="w-full rounded-lg bg-gray-100 mb-3" />` : ''}
+            
+                <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
+                  <div id="like-count-${post.id}">❤️ ${post.totalLikes || 0}</div>
+                  <div>💬 ${post.totalComments || 0} bình luận</div>
+                </div>
+            
+                <div class="flex gap-4 mb-3">
+                  <button id="like-btn-${post.id}" onclick="toggleLike(${post.id}, ${post.isLiked})" class="flex items-center gap-1 text-gray-600 hover:text-red-500 transition">
+                    <i class="${post.isLiked ? 'fas' : 'far'} fa-heart"></i>
+                    <span>Thích</span>
+                  </button>
+                </div>
+            
+                <div class="flex gap-2 mb-3">
+                  <input type="text" placeholder="Viết bình luận..." id="comment-input-${post.id}" class="flex-1 px-3 py-2 border rounded-md" />
+                  <button onclick="addComment(${post.id})" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Gửi</button>
+                </div>
+            
+                <div class="space-y-3">
+                  ${post.comments?.map(c => `
+                    <div class="flex items-start gap-2">
+                      <img src="${c.avatarUrl || '/images/default-avatar.png'}" class="w-8 h-8 rounded-full" />
+                      <div class="bg-gray-100 p-2 rounded-md w-full">
+                        <div class="text-sm font-semibold">${c.nickName}</div>
+                        <div class="text-sm">${c.content}</div>
+                      </div>
+                    </div>
+                  `).join('') || ''}
+                </div>
+              </div>
+            `).join('');
+
+
+                window.toggleLike = async function(postId, isLiked) {
+                    const url = isLiked ? `/v1/user/unlike?postId=${postId}` : `/v1/user/likepost?postId=${postId}`;
+                    const method = isLiked ? "DELETE" : "POST";
+
+                    await fetch(url, {
+                        method: method,
+                        headers: {
+                            "Authorization": "Bearer " + localStorage.getItem("token")
+                        }
+                    });
+
+                    const countRes = await fetch(`/v1/user/count-liked?postId=${postId}`, {
+                        headers: {
+                            "Authorization": "Bearer " + localStorage.getItem("token")
+                        }
+                    });
+
+                    const countData = await countRes.json();
+                    const likeCount = countData.data;
+
+                    const btn = document.getElementById(`like-btn-${postId}`);
+                    const newIsLiked = !isLiked;
+                    const icon = newIsLiked ? "❤️" : "🖤";
+                    btn.innerText = `${icon} Thích (${likeCount})`;
+                    btn.setAttribute("onclick", `toggleLike(${postId}, ${newIsLiked})`);
+                };
+
             })
             .catch(error => {
                 console.error("Error fetching posts:", error);
                 const postsContainer = document.getElementById("postsContainer");
                 if (postsContainer) postsContainer.innerHTML = '<div class="bg-white rounded-lg shadow-md p-4 text-center text-gray-500">Không thể tải bài viết.</div>';
             });
+        window.toggleLike = async function(postId, isLiked) {
+            const url = isLiked ? `/v1/user/unlike?postId=${postId}` : `/v1/user/likepost?postId=${postId}`;
+            const method = isLiked ? "DELETE" : "POST";
+
+            await fetch(url, {
+                method,
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+
+            const countRes = await fetch(`/v1/user/count-liked?postId=${postId}`, {
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            });
+
+            const countData = await countRes.json();
+            const likeCount = countData.data;
+
+            const btn = document.getElementById(`like-btn-${postId}`);
+            const newIsLiked = !isLiked;
+            const icon = newIsLiked ? "❤️" : "🖤";
+            btn.innerText = `${icon} Thích`;
+            btn.setAttribute("onclick", `toggleLike(${postId}, ${newIsLiked})`);
+        };
+
+        window.addComment = async function(postId) {
+            const input = document.getElementById(`comment-input-${postId}`);
+            const content = input.value.trim();
+            if (!content) return;
+
+            const res = await fetch(`/v1/user/cmt/add?postId=${postId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ content })
+            });
+
+            const result = await res.json();
+            alert(result.data);
+            input.value = "";
+            location.reload(); // hoặc cập nhật bài viết nếu muốn
+        };
 
     } else {
         console.error("Không tìm thấy userId. Không thể tải trang profile.");
