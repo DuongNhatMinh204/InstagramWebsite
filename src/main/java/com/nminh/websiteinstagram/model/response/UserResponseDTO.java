@@ -22,4 +22,5 @@ public class UserResponseDTO {
     private LocalDate birthday;
     private String gender ;
     private String avatarUrl ;
+    private Integer status ;
 }

@@ -42,13 +42,66 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<!--<script>-->
+<!--    document.getElementById("loginForm").addEventListener("submit", function(e) {-->
+<!--        e.preventDefault();-->
+<!--        fetch("/v1/auth/login", {-->
+<!--            method: "POST",-->
+<!--            headers: {-->
+<!--                "Content-Type": "application/json" ,-->
+<!--            },-->
+<!--            body: JSON.stringify({-->
+<!--                phone: this.phone.value,-->
+<!--                password: this.password.value-->
+<!--            })-->
+<!--        })-->
+<!--            .then(res => {-->
+<!--                if (!res.ok) {-->
+<!--                    throw new Error('Đăng nhập thất bại. Vui lòng kiểm tra lại số điện thoại hoặc mật khẩu.');-->
+<!--                }-->
+<!--                return res.json();-->
+<!--            })-->
+<!--            .then(data => {-->
+<!--                // Lưu token vào localStorage-->
+<!--                localStorage.setItem("token", data.token);-->
+<!--                localStorage.setItem("role", data.role);-->
+
+<!--                if (data.role === "ADMIN") {-->
+<!--                    window.location.href = "/admin"; // Trang dành cho admin-->
+<!--                }-->
+<!--                // Gọi API /v1/user/me để lấy userId-->
+<!--                return fetch("/v1/auth/me", {-->
+<!--                    method: "GET",-->
+<!--                    headers: {-->
+<!--                        "Authorization": "Bearer " + data.token-->
+<!--                    }-->
+<!--                });-->
+<!--            })-->
+<!--            .then(res => {-->
+<!--                if (!res.ok) {-->
+<!--                    throw new Error('Không thể lấy thông tin người dùng.');-->
+<!--                }-->
+<!--                return res.json();-->
+<!--            })-->
+<!--            .then(userData => {-->
+<!--                // Lưu userId vào localStorage-->
+<!--                localStorage.setItem("userId", userData.id);-->
+<!--                window.location.href = "/home";-->
+<!--            })-->
+<!--            .catch(err => {-->
+<!--                console.error('Lỗi:', err);-->
+<!--                alert(err.message); // Hiển thị thông báo lỗi cụ thể-->
+<!--            });-->
+<!--    });-->
+<!--</script>-->
 <script>
     document.getElementById("loginForm").addEventListener("submit", function(e) {
         e.preventDefault();
+
         fetch("/v1/auth/login", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json" ,
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({
                 phone: this.phone.value,
@@ -57,38 +110,47 @@
         })
             .then(res => {
                 if (!res.ok) {
-                    throw new Error('Đăng nhập thất bại. Vui lòng kiểm tra lại số điện thoại hoặc mật khẩu.');
+                    throw new Error('Đăng nhập thất bại. Vui lòng kiểm tra lại số điện thoại hoặc mật khẩu.' +
+                        '\n Hoặc tài khoản của bạn có thể đã bị khóa ');
                 }
                 return res.json();
             })
             .then(data => {
-                // Lưu token vào localStorage
+                // Lưu token và role vào localStorage
                 localStorage.setItem("token", data.token);
+                localStorage.setItem("role", data.role);
 
-                // Gọi API /v1/user/me để lấy userId
-                return fetch("/v1/auth/me", {
-                    method: "GET",
-                    headers: {
-                        "Authorization": "Bearer " + data.token
-                    }
-                });
-            })
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error('Không thể lấy thông tin người dùng.');
+                if (data.role === "ADMIN") {
+                    // Nếu là admin thì chuyển thẳng sang trang admin
+                    window.location.href = "/admin";
+                } else if (data.role === "USER") {
+                    // Nếu là user thì gọi API /v1/auth/me để lấy userId
+                    return fetch("/v1/auth/me", {
+                        method: "GET",
+                        headers: {
+                            "Authorization": "Bearer " + data.token
+                        }
+                    })
+                        .then(res => {
+                            if (!res.ok) {
+                                throw new Error('Không thể lấy thông tin người dùng.');
+                            }
+                            return res.json();
+                        })
+                        .then(userData => {
+                            localStorage.setItem("userId", userData.id);
+                            window.location.href = "/home";
+                        });
+                } else {
+                    throw new Error("Role không hợp lệ hoặc chưa được hỗ trợ.");
                 }
-                return res.json();
-            })
-            .then(userData => {
-                // Lưu userId vào localStorage
-                localStorage.setItem("userId", userData.id);
-                window.location.href = "/home";
             })
             .catch(err => {
                 console.error('Lỗi:', err);
-                alert(err.message); // Hiển thị thông báo lỗi cụ thể
+                alert(err.message);
             });
     });
+
 </script>
 </body>
 </html>

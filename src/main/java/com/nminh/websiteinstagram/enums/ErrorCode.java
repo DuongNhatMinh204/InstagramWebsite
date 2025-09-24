@@ -29,6 +29,7 @@ public enum ErrorCode {
     INVALID_PASSWORD(1002, "Invalid password", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED(1003, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1004, "You do not have permission", HttpStatus.FORBIDDEN),
+    ACCOUNT_LOCKET(1005," Your account locked" , HttpStatus.CONFLICT) ,
     ;
 
 

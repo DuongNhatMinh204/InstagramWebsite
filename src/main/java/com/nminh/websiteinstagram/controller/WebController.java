@@ -11,7 +11,7 @@ public class WebController {
     }
     @GetMapping("/login")
     public String loginPage() {
-        return "login"; // src/main/resources/templates/login.html
+        return "login";
     }
     @GetMapping("/profile")
     public String profilePage() {return "profile";}
@@ -21,7 +21,9 @@ public class WebController {
 
     @GetMapping("/edit-profile")
     public String editProfilePage() {
-        return "edit-profile"; // Nếu bạn dùng Thymeleaf hoặc template engine
+        return "edit-profile";
     }
 
+    @GetMapping("/admin")
+    public String adminPage() {return "admin";}
 }

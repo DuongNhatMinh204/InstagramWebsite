@@ -1,5 +1,6 @@
 package com.nminh.websiteinstagram.security;
 
+import com.nminh.websiteinstagram.repository.BlacklistedTokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,12 +18,14 @@ import java.io.IOException;
 //                      3.hợp lệ : -> tạo đối tượng xác thực Authentication  và gán vào Security Context
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
     @Autowired
     private JWTService jwtService;
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    private BlacklistedTokenRepository blacklistedTokenRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -40,6 +43,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         jwt = authHeader.substring(7); // bỏ "bearer"
+        // Kiểm tra token có nằm trong blacklist không
+        if (blacklistedTokenRepository.findByToken(jwt).isPresent()) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token đã bị vô hiệu hóa. Vui lòng đăng nhập lại.");
+            return;
+        }
+
         userPhone = jwtService.extractUsername(jwt);
 
         if (userPhone != null && SecurityContextHolder.getContext().getAuthentication() == null) {

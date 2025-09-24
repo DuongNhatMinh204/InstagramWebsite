@@ -63,7 +63,6 @@ public class User {
     @CreationTimestamp
     private Date created ;
 
-    // --- Các trường Profile đã được gộp vào User ---
     @Column(name = "address")
     private String address;
 
@@ -75,9 +74,9 @@ public class User {
 
     @Column(name = "education")
     private String education;
-    // --- Hết các trường Profile ---
 
-
+    @Column(name = "status")
+    private Integer status;
     // Danh sách người mình đang theo dõi
     @OneToMany(mappedBy = "follower")
     @JsonIgnore

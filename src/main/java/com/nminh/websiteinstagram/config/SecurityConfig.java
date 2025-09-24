@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -40,6 +41,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 )
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtFilter ;
@@ -74,7 +76,8 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/swagger-resources/**",
                                 "/webjars/**",
-                                "/search-results.html"
+                                "/search-results.html",
+                                "/admin"
                         ).permitAll()
                         .requestMatchers("/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/chat/**","/v1/user/chat/**","/v1/profile/**","/v1/user/unfollowing").hasAnyRole("USER", "ADMIN")

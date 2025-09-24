@@ -2,6 +2,7 @@ package com.nminh.websiteinstagram.security;
 
 import com.nminh.websiteinstagram.enums.ErrorCode;
 import com.nminh.websiteinstagram.exception.AppException;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -33,7 +36,7 @@ public class JWTService {
     // lấy tất cả claim
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder().
-                setSigningKey(secretKey).
+                setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes())).
                 build().
                 parseClaimsJws(token).
                 getBody();
@@ -63,7 +66,7 @@ public class JWTService {
                 .claim("roles", userDetails.getAuthorities())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(SignatureAlgorithm.HS256, Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
     }
 }
