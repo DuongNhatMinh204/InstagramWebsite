@@ -21,5 +21,6 @@ public interface UserService {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     List<UserInfoResponse> allUsers();
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     UserInfoResponse changeStatus(Long id);
 }
